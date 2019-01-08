@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>快照管理</title>
+    <link href="../../lib/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="../../ico/favicon.ico" rel="icon" type="image/x-icon"/>
+</head>
+<body>
+<div class="layui-row" style="padding-left: 20px;padding-right: 20px;padding-top: 5px;">
+    <div>
+        <blockquote id="processinfo" class="site-text layui-elem-quote" style="background-color: #dddddd;">
+        </blockquote>
+    </div>
+
+    <div class="layui-collapse" id="tableBox" lay-filter="tableBox" style="margin-top: 20px;margin-bottom: 20px;" lay-accordion>
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title" onclick="_table.classloader()">10分钟ClassLoader情况</h2>
+            <div class="layui-colla-content" style="background-color: #FFFFFF;">
+                <table id="classTable"></table>
+            </div>
+        </div>
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title" onclick="">10分钟GC情况</h2>
+            <div class="layui-colla-content" style="background-color: #FFFFFF;">
+                <table id="gcTable"></table>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-col-md12" style="margin-top: 40px;">
+        <div id="classloader" class="layui-col-md4">
+            <div id="classloadermain" style="height: 450px;"></div>
+        </div>
+        <div id="classloadertime" class="layui-col-md4">
+            <div id="classloadertimemain" style="height: 450px;"></div>
+        </div>
+        <div id="classbyte" class="layui-col-md4">
+            <div id="classbytemain" style="height: 450px;"></div>
+        </div>
+    </div>
+
+    <div class="layui-col-md12" style="margin-top: 25px;">
+
+    </div>
+</div>
+</body>
+<script src="../../lib/jquery-3.1.1.min.js" type="text/javascript"></script>
+<script src="../../lib/layui/layui.all.js" type="text/javascript"></script>
+<script src="../../lib/sockjs.min.js" type="text/javascript"></script>
+<script src="../../lib/stomp.min.js" type="text/javascript"></script>
+<script src="../../lib/echarts.min.js" type="text/javascript"></script>
+<script src="../../js/public/cache.js" type="text/javascript"></script>
+<script src="../../js/public/util.js" type="text/javascript"></script>
+<script src="../../js/jvm/process.js" type="text/javascript"></script>
+</html>

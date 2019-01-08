@@ -9,7 +9,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
 /**
  * @author:Li
- * @time: 2018/12/9 9:59
+ * @time: 2019/1/2 9:59
  * @version: 1.0.0
  * 注解开启使用STOMP协议来传输基于代理(message broker)的消息,这时控制器支持使用@MessageMapping,就像使用@RequestMapping一样
  */
@@ -34,7 +34,7 @@ public class StompConf extends AbstractWebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // 注册多个（参数是可变参数）服务端接收消息前缀
-        registry.setApplicationDestinationPrefixes("/app", "/application");
+        registry.setApplicationDestinationPrefixes("/app");
         // 注册多个（参数是可变参数）服务端发送消息前缀
         registry.enableSimpleBroker("/queue", "/topic", "/user");
         // 注册 服务端接收1对1消息前缀
