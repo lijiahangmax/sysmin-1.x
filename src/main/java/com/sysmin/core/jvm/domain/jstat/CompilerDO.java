@@ -38,6 +38,11 @@ public class CompilerDO {
      */
     private String failedMethod;
 
+    /**
+     * 当前时间
+     */
+    private String date;
+
     public Integer getCompiled() {
         return compiled;
     }
@@ -92,6 +97,15 @@ public class CompilerDO {
         return this;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public CompilerDO setDate(String date) {
+        this.date = date;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "CompilerDO{" +
@@ -101,6 +115,7 @@ public class CompilerDO {
                 ", time=" + time +
                 ", failedType=" + failedType +
                 ", failedMethod='" + failedMethod + '\'' +
+                ", date='" + date + '\'' +
                 '}';
     }
 
@@ -111,6 +126,7 @@ public class CompilerDO {
         time = null;
         failedType = null;
         failedMethod = null;
+        date = null;
         return this;
     }
 

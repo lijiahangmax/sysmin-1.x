@@ -72,11 +72,14 @@ public abstract class BaseContinueOut {
         try {
             process = BashUtil.checkCommand(commands);
             int pid = 0;
+            String type = "";
             if (useId) {
                 if (commands instanceof String) {
                     pid = extractId((String) commands);
+                    type = (String) commands;
                 } else if (commands instanceof String[]) {
                     pid = extractId(((String[]) commands)[2]);
+                    type = ((String[]) commands)[2];
                 }
                 jvmProcess.add(process);
             }
@@ -85,7 +88,7 @@ public abstract class BaseContinueOut {
             String line = null;
             while ((line = reader.readLine()) != null) {
                 if (!"".equals(line)) {
-                    invoke(line, pid);
+                    invoke(line, pid, type);
                 }
             }
             reader.close();
@@ -97,16 +100,12 @@ public abstract class BaseContinueOut {
             }
             reader.close();
         } catch (IOException e) {
-            // 流已关闭
             if (e.getMessage().contains("Stream Closed")) {
-
-                // 未安装应用
+                // 流已关闭
             } else if (e.getMessage().contains("Cannot run program")) {
-
-                // 已关闭
+                // 未安装应用
             } else if (e.getMessage().contains("管道的另一端上无任何进程")) {
-
-
+                // 已关闭
             } else {
                 e.printStackTrace();
             }
@@ -125,10 +124,11 @@ public abstract class BaseContinueOut {
     /**
      * 获得结果执行
      *
-     * @param data 数据
-     * @param pid  进程id
+     * @param data    数据
+     * @param pid     进程id
+     * @param command 命令
      */
-    protected abstract void invoke(String data, int pid);
+    protected abstract void invoke(String data, int pid, String command);
 
     /**
      * 处理失败执行

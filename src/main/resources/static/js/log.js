@@ -208,12 +208,12 @@ _logElenent.xfile = function () {
  */
 _logElenent.printLog = function (log) {
     var _log = eval("(" + log + ")");
-    $("#logcontainer").prepend("<div id='" + _log.id + "'>" +
-        _log.logType +
-        _log.user +
-        _log.createTime +
-        _log.remake +
-        _log.log +
+    $("#logcontainer").prepend("<div class='layui-row logs' id='log" + _log.id + "' style=''>" +
+        "<div class='layui-col-md1'>" + _log.logType + "</div>" +
+        "<div class='layui-col-md1'>" + _log.user + "</div>" +
+        "<div class='layui-col-md2'>" + _log.createTime + "</div>" +
+        "<div class='layui-col-md3'>" + _log.remake + "</div>" +
+        "<div class='layui-col-md5'>" + _log.log + "</div>" +
         "</div><br/>");
     cache.addCache("logcache", _log.id, log)
 }

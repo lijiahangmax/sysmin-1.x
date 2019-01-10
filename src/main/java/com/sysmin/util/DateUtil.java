@@ -1,9 +1,11 @@
 package com.sysmin.util;
 
+import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -29,21 +31,8 @@ public class DateUtil {
     public static final String MINUTE = "mm";
     public static final String SECOND = "ss";
     public static final String WEEK = "EEEE";
+    public static final String WORLD = "dd/MMMMM/yyyy:HH:mm:ss Z";
     public static final String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    /**
-     * 检查时间格式
-     *
-     * @param format 时间格式
-     * @return SimpleDateFormat对象
-     */
-    private static SimpleDateFormat checkSimpleDateFormat(String format) {
-        if (format != null && !"".equals(format)) {
-            return getSimple(format);
-        } else {
-            return getSimple(DEFAULT_FORMAT);
-        }
-    }
 
     /**
      * 存放SimpleDateFormat的容器
@@ -51,9 +40,35 @@ public class DateUtil {
     private static Map<String, SimpleDateFormat> container = new HashMap<String, SimpleDateFormat>();
 
     /**
-     * 从容器中获取simpleDateFormate
+     * 获得处理时间格式实例
      *
-     * @param format
+     * @param format 时间格式
+     * @return SimpleDateFormat对象
+     */
+    public static SimpleDateFormat checkSimpleDateFormat(String format) {
+        return checkSimpleDateFormat(format, null);
+    }
+
+    /**
+     * 获得处理时间格式实例
+     *
+     * @param format 时间格式
+     * @return SimpleDateFormat对象
+     */
+    public static SimpleDateFormat checkSimpleDateFormat(String format, Locale locale) {
+        if (format != null && !"".equals(format) && locale != null) {
+            return getSimple(format, locale);
+        } else if (format != null && !"".equals(format) && locale == null) {
+            return getSimple(format);
+        } else {
+            return getSimple(DEFAULT_FORMAT);
+        }
+    }
+
+    /**
+     * 从容器中获取simpleDateFormat
+     *
+     * @param format 格式
      * @return
      */
     private static SimpleDateFormat getSimple(String format) {
@@ -61,6 +76,47 @@ public class DateUtil {
             container.put(format, new SimpleDateFormat(format));
         }
         return container.get(format);
+    }
+
+    /**
+     * 从容器中获取simpleDateFormat
+     *
+     * @param format 格式
+     * @param locale 时区类型
+     * @return
+     */
+    private static SimpleDateFormat getSimple(String format, Locale locale) {
+        if (!container.containsKey(format)) {
+            container.put(format, new SimpleDateFormat(format, locale));
+        }
+        return container.get(format);
+    }
+
+    /**
+     * 将英国时间转为date
+     *
+     * @param s 英国时间
+     * @return date
+     */
+    public static Date worldToDate(String s) {
+        return worldToDate(s, WORLD, Locale.ENGLISH);
+    }
+
+    /**
+     * 将世界时间转为date
+     *
+     * @param s      未处理的时间
+     * @param format 时间格式
+     * @param locale 时区格式
+     * @return date
+     */
+    public static Date worldToDate(String s, String format, Locale locale) {
+        SimpleDateFormat simpleDateFormat = checkSimpleDateFormat(format, locale);
+        try {
+            return simpleDateFormat.parse(s);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     /**

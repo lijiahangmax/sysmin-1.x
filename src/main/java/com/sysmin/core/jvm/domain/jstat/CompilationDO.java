@@ -14,7 +14,7 @@ public class CompilationDO {
     private Integer compiled;
 
     /**
-     * 方法生成的字节码的大小
+     *
      */
     private Integer size;
 
@@ -27,6 +27,11 @@ public class CompilationDO {
      * 类名和方法名用来标识编译的方法。类名使用/做为一个命名空间分隔符。方法名是给定类中的方法
      */
     private String method;
+
+    /**
+     * 当前时间
+     */
+    private String date;
 
     public Integer getCompiled() {
         return compiled;
@@ -64,6 +69,15 @@ public class CompilationDO {
         return this;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public CompilationDO setDate(String date) {
+        this.date = date;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "CompilationDO{" +
@@ -71,6 +85,7 @@ public class CompilationDO {
                 ", size=" + size +
                 ", type=" + type +
                 ", method='" + method + '\'' +
+                ", date='" + date + '\'' +
                 '}';
     }
 
@@ -79,6 +94,7 @@ public class CompilationDO {
         size = null;
         type = null;
         method = null;
+        date = null;
         return this;
     }
 

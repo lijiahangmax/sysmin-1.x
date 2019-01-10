@@ -25,6 +25,9 @@ var _init = function () {
 // 主页元素
 var _indexElement = new Object();
 
+// 操作数据对象
+var data = new Object();
+
 /**
  * 点击li a切换页面
  */
@@ -84,6 +87,10 @@ _indexElement.appendJavaProcess = function () {
             _jvmAllProcessArr.push(_data.pid);
             $("#javaprocess").prepend('<dd><a href="javascript:;" class="changepage" ref="/javaprocessinfo?pid=' + _data.pid + '">' + _data.name + '</a></dd>')
             _indexElement.listenerJavaProcess('/user/' + _userId + '/classloader/' + _data.pid, _data.pid, "classloader")
+            _indexElement.listenerJavaProcess('/user/' + _userId + '/gc/' + _data.pid, _data.pid, "gc")
+            _indexElement.listenerJavaProcess('/user/' + _userId + '/gcutil/' + _data.pid, _data.pid, "gcutil")
+            _indexElement.listenerJavaProcess('/user/' + _userId + '/compiler/' + _data.pid, _data.pid, "compiler")
+            _indexElement.listenerJavaProcess('/user/' + _userId + '/compilation/' + _data.pid, _data.pid, "compilation")
         })
     })
 }
@@ -92,17 +99,33 @@ _indexElement.appendJavaProcess = function () {
  * 点击jvm监控
  */
 $("#jvmmom").click(function () {
-    //cache.cleanCache("classloader")
-    if (cache.getCache("config", "monitorallopt") != 1) {
-        $.post("/monitorallopt", {
-            pids: _jvmAllProcessArr.join(",")
-        }, function (data) {
-            cache.addCache("config", "monitorallopt", 1)
-        })
+    if (data.stackPoll == undefined) {
+        _indexElement.getStack(60000);
     }
-    //cache.cleanCache("config")
-
+    $.post("/monitorsize", {}, function (data) {
+        if (data == 0) {
+            $.post("/monitorallopt", {
+                pids: _jvmAllProcessArr.join(",")
+            }, function (data) {
+                if (data == 2) {
+                    layer.alert("JVM监控失败")
+                }
+            })
+        }
+    })
 })
+
+/**
+ * 情况jvm缓存数据
+ */
+data.clearJVMData = function () {
+    cache.cleanCache("classloader")
+    cache.cleanCache("gc")
+    cache.cleanCache("gcutil")
+    cache.cleanCache("compiler")
+    cache.cleanCache("compilation")
+    cache.cleanCache("stack")
+}
 
 /**
  * 监听所有java进程
@@ -111,20 +134,59 @@ $("#jvmmom").click(function () {
  */
 _indexElement.listenerJavaProcess = function (_url, _pid, _type) {
     _stompClient.subscribe(_url, function (_data) {
-        var key = _type + _pid;
-        let _caches = cache.getCache(_type, key);
-        if (_caches == undefined) {
-            cache.addCache(_type, _type + _pid, new Array(_data.body))
-        } else {
-            _caches.push(_data.body)
-            // 显示10条
-            if (_caches.length > 10) {
-                _caches.splice(0, _caches.length - 10);
-            }
-            cache.addCache(_type, _type + _pid, _caches)
-        }
-        console.log(cache.getCache(_type))
+        data.addJVMDataToCache(_data.body, _pid, _type)
     });
+}
+
+/**
+ * 用于关闭轮询获取stack
+ */
+data.stackPoll;
+
+/**
+ * 轮询获取stack数据
+ * @param timer
+ */
+_indexElement.getStack = function (timer) {
+    data.getStackToCache();
+    data.stackPoll = window.setInterval(function () {
+        data.getStackToCache();
+    }, timer)
+}
+
+/**
+ * 添加jvm数据到缓存
+ * @param _data 数据
+ * @param _pid 进程id
+ * @param _type 进程类型
+ */
+data.addJVMDataToCache = function (_data, _pid, _type) {
+    var key = _type + _pid;
+    let _caches = cache.getCache(_type, key);
+    if (_caches == undefined) {
+        cache.addCache(_type, _type + _pid, new Array(_data))
+    } else {
+        _caches.push(_data)
+        // 显示10条
+        if (_caches.length > 10) {
+            _caches.splice(0, _caches.length - 10);
+        }
+        cache.addCache(_type, _type + _pid, _caches)
+    }
+    console.log(cache.getCache(_type))
+}
+
+/**
+ * 添加stack thread 到cache
+ */
+data.getStackToCache = function () {
+    $.post("/monitorallstack", {
+        pids: _jvmAllProcessArr.join(",")
+    }, function ($data) {
+        $.each($data, function (index, _data) {
+            data.addJVMDataToCache(_data, index, "stack")
+        })
+    })
 }
 
 // 页面元素

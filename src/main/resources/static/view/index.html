@@ -11,7 +11,9 @@
     <div class="layui-header">
         <div class="layui-logo">sysmin</div>
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item"><a href="javascript:;" onclick="data.clearJVMData()">1</a></li>
+            <li class="layui-nav-item"><a href="javascript:;" onclick="cache.cleanCache('config')">2</a></li>
+            <li class="layui-nav-item"><a href="javascript:;" onclick="window.open('/stopallmonitor')">clear</a></li>
             <li class="layui-nav-item">
                 <a href="javascript:;">其它系统</a>
                 <dl class="layui-nav-child">

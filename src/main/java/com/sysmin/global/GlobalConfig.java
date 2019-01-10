@@ -1,6 +1,7 @@
 package com.sysmin.global;
 
 import com.sysmin.core.log.Log;
+import com.sysmin.core.system.SystemInfo;
 import com.sysmin.util.BashUtil;
 import com.sysmin.util.FileUtil;
 import com.sysmin.util.StringUtil;
@@ -22,6 +23,7 @@ public class GlobalConfig {
     private static Map<String, Object> container = new HashMap<>();
 
     static {
+        new SystemInfo();
         container.put("logPath", FileUtil.getRootPath("/log/"));
         container.put("shPath", FileUtil.getRootPath("/sh/"));
         container.put("dumpPath", FileUtil.getRootPath("/dump/"));

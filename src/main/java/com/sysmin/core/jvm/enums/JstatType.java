@@ -34,15 +34,6 @@ public enum JstatType {
     GC;
 
     /**
-     * 命令类型
-     */
-    private int type;
-
-    public int getType() {
-        return type;
-    }
-
-    /**
      * 将命令封装   默认60秒一次
      *
      * @param pid 进程id
@@ -62,22 +53,16 @@ public enum JstatType {
     public String getType(int pid, int time) {
         switch (this) {
             case CLASS:
-                type = 0;
                 return "jstat -class " + pid + " " + time;
             case COMPILER:
-                type = 1;
                 return "jstat -compiler " + pid + " " + time;
             case GCUTIL:
-                type = 2;
                 return "jstat -gcutil " + pid + " " + time;
             case PRINTCOMPILATION:
-                type = 3;
                 return "jstat -printcompilation " + pid + " " + time;
             case GC:
-                type = 4;
                 return "jstat -gc " + pid + " " + time;
             default:
-                type = 4;
                 return "jstat -gc " + pid + " " + time;
         }
     }

@@ -6,6 +6,18 @@
     <link href="../lib/layui/css/layui.css" rel="stylesheet" type="text/css"/>
     <link href="../ico/favicon.ico" rel="icon" type="image/x-icon"/>
 </head>
+<style>
+    .logs div {
+        word-wrap: break-word;
+        padding-right: 25px;
+        padding-left: 10px;
+        padding-bottom: 10px;
+    }
+
+    #logtitle div {
+        padding-left: 10px;
+    }
+</style>
 <body>
 <div>
     <div class="layui-row">
@@ -30,7 +42,16 @@
                 <div id="logfiles" style="margin-left: 20px;"></div>
             </div>
             <div class="layui-col-md10">
-                <div id="logcontainer" style="margin-left: 50px;"></div>
+                <div id="logtitle" style="margin-left: 50px;margin-bottom: 30px;">
+                    <div class="layui-col-md1">类型</div>
+                    <div class="layui-col-md1">用户</div>
+                    <div class="layui-col-md2">时间</div>
+                    <div class="layui-col-md3">简述</div>
+                    <div class="layui-col-md5">信息</div>
+                </div>
+                <hr style="margin-left: 50px;">
+                <div id="logcontainer" style="padding-left: 50px;padding-top: 5px;">
+                </div>
             </div>
         </div>
     </div>

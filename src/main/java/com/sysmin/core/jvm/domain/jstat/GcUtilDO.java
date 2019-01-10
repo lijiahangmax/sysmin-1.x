@@ -63,6 +63,11 @@ public class GcUtilDO {
      */
     private Double gct;
 
+    /**
+     * 当前时间
+     */
+    private String date;
+
     public Double getS0() {
         return s0;
     }
@@ -162,6 +167,15 @@ public class GcUtilDO {
         return this;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public GcUtilDO setDate(String date) {
+        this.date = date;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "GcUtilDO{" +
@@ -176,6 +190,7 @@ public class GcUtilDO {
                 ", fgc=" + fgc +
                 ", fgct=" + fgct +
                 ", gct=" + gct +
+                ", date='" + date + '\'' +
                 '}';
     }
 
@@ -191,6 +206,7 @@ public class GcUtilDO {
         fgc = null;
         fgct = null;
         gct = null;
+        date = null;
         return this;
     }
 

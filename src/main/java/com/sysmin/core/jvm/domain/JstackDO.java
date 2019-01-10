@@ -13,7 +13,7 @@ public class JstackDO {
     private Integer pid;
 
     /**
-     * 线程总数
+     * 正在线程总数
      */
     private Integer total;
 
@@ -23,19 +23,30 @@ public class JstackDO {
     private Integer running;
 
     /**
-     * 等待的线程数
+     * 等待唤醒的线程数
      */
     private Integer waiting;
 
     /**
-     * 等待的线程数 (自动释放)
+     * 被阻塞的线程数
+     * 等待monitor锁(synchronized关键字)的线程数
+     */
+    private Integer blocked;
+
+    /**
+     * 等待唤醒 但设置了时限的线程数
      */
     private Integer timeWaiting;
 
     /**
-     * vm线程
+     * vm线程总数
      */
-    private Integer vmToatl;
+    private Integer vmTotal;
+
+    /**
+     * 当前时间
+     */
+    private String date;
 
     public Integer getPid() {
         return pid;
@@ -82,30 +93,31 @@ public class JstackDO {
         return this;
     }
 
-    public Integer getVmToatl() {
-        return vmToatl;
+    public Integer getVmTotal() {
+        return vmTotal;
     }
 
-    public JstackDO setVmToatl(Integer vmToatl) {
-        this.vmToatl = vmToatl;
+    public JstackDO setVmTotal() {
+        vmTotal = total - running - waiting - timeWaiting - blocked;
         return this;
     }
 
-    public JstackDO setVmToatl() {
-        vmToatl = total - running - waiting - timeWaiting;
+    public String getDate() {
+        return date;
+    }
+
+    public JstackDO setDate(String date) {
+        this.date = date;
         return this;
     }
 
-    @Override
-    public String toString() {
-        return "JstackDO{" +
-                "pid=" + pid +
-                ", total=" + total +
-                ", running=" + running +
-                ", waiting=" + waiting +
-                ", timeWaiting=" + timeWaiting +
-                ", vmToatl=" + vmToatl +
-                '}';
+    public Integer getBlocked() {
+        return blocked;
+    }
+
+    public JstackDO setBlocked(Integer blocked) {
+        this.blocked = blocked;
+        return this;
     }
 
     public JstackDO clear() {
@@ -114,7 +126,9 @@ public class JstackDO {
         running = null;
         waiting = null;
         timeWaiting = null;
-        vmToatl = null;
+        blocked = null;
+        vmTotal = null;
+        date = null;
         return this;
     }
 

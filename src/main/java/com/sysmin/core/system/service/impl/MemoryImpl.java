@@ -31,7 +31,7 @@ public class MemoryImpl extends BaseContinueOut implements MemoryApi {
     }
 
     @Override
-    protected void invoke(String data, int pid) {
+    protected void invoke(String data, int pid, String command) {
         lines++;
         if (lines == 2) {
             StringTokenizer token1 = new StringTokenizer(StringUtil.replaceBlank(data, " "), " ");

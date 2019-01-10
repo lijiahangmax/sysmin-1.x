@@ -37,7 +37,7 @@ public class FlowImpl extends BaseContinueOut implements FlowApi {
     }
 
     @Override
-    protected void invoke(String data, int pid) {
+    protected void invoke(String data, int pid, String command) {
         lines++;
         if (lines == 1) {
             List<String> list = new ArrayList<>();

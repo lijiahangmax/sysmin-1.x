@@ -58,7 +58,7 @@ public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
     }
 
     @Override
-    protected void invoke(String data, int pid) {
+    protected void invoke(String data, int pid, String command) {
         if (type == 0) {
             ioCpuMonitor(data);
         } else if (type == 1) {

@@ -27,12 +27,6 @@ public class JstatImpl extends BaseContinueOut implements JstatApi {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     /**
-     * 命令类型
-     * 0:class  1:compiler  2:gcutil  3:printcompilation  4:gc
-     */
-    private int type = 0;
-
-    /**
      * 获得类加载信息
      *
      * @param data 数据
@@ -40,7 +34,6 @@ public class JstatImpl extends BaseContinueOut implements JstatApi {
      */
     private void getClassLoader(String data, int pid) {
         if (!data.contains("Loaded")) {
-            System.out.println(pid + " ---- " + data);
             StringTokenizer token = new StringTokenizer(StringUtil.replaceBlank(data, " "), " ");
             ClassLoaderDO loader = new ClassLoaderDO()
                     .setLoaded(Integer.valueOf(token.nextToken()))
@@ -67,11 +60,12 @@ public class JstatImpl extends BaseContinueOut implements JstatApi {
                     .setFailed(Integer.valueOf(token.nextToken()))
                     .setInvalid(Integer.valueOf(token.nextToken()))
                     .setTime(Double.valueOf(token.nextToken()))
-                    .setFailedType(Integer.valueOf(token.nextToken()));
+                    .setFailedType(Integer.valueOf(token.nextToken()))
+                    .setDate(DateUtil.getNowDate(DateUtil.HOUR + "时" + DateUtil.MINUTE + "分"));
             while (token.hasMoreTokens()) {
-                compiler.setFailedMethod(compiler.getFailedMethod() + " " + token.nextToken());
+                compiler.setFailedMethod((compiler.getFailedMethod() == null ? "" : compiler.getFailedMethod()) + " " + token.nextToken());
             }
-            System.out.println(JsonUtil.objToJson(compiler));
+            simpMessagingTemplate.convertAndSendToUser("test", "/compiler/" + pid, JsonUtil.objToJson(compiler));
         }
     }
 
@@ -95,8 +89,9 @@ public class JstatImpl extends BaseContinueOut implements JstatApi {
                     .setYgct(Double.valueOf(token.nextToken()))
                     .setFgc(Integer.valueOf(token.nextToken()))
                     .setFgct(Double.valueOf(token.nextToken()))
-                    .setGct(Double.valueOf(token.nextToken()));
-            simpMessagingTemplate.convertAndSendToUser("test", "", JsonUtil.objToJson(gcutil));
+                    .setGct(Double.valueOf(token.nextToken()))
+                    .setDate(DateUtil.getNowDate(DateUtil.HOUR + "时" + DateUtil.MINUTE + "分"));
+            simpMessagingTemplate.convertAndSendToUser("test", "/gcutil/" + pid, JsonUtil.objToJson(gcutil));
         }
     }
 
@@ -112,11 +107,12 @@ public class JstatImpl extends BaseContinueOut implements JstatApi {
             CompilationDO compilation = new CompilationDO()
                     .setCompiled(Integer.valueOf(token.nextToken()))
                     .setSize(Integer.valueOf(token.nextToken()))
-                    .setType(Integer.valueOf(token.nextToken()));
+                    .setType(Integer.valueOf(token.nextToken()))
+                    .setDate(DateUtil.getNowDate(DateUtil.HOUR + "时" + DateUtil.MINUTE + "分"));
             while (token.hasMoreTokens()) {
-                compilation.setMethod(compilation.getMethod() + " " + token.nextToken());
+                compilation.setMethod((compilation.getMethod() == null ? "" : compilation.getMethod()) + " " + token.nextToken());
             }
-            simpMessagingTemplate.convertAndSendToUser("test", "", JsonUtil.objToJson(compilation));
+            simpMessagingTemplate.convertAndSendToUser("test", "/compilation/" + pid, JsonUtil.objToJson(compilation));
         }
     }
 
@@ -146,8 +142,9 @@ public class JstatImpl extends BaseContinueOut implements JstatApi {
                     .setYgct(Double.valueOf(token.nextToken()))
                     .setFgc(Integer.valueOf(token.nextToken()))
                     .setFgct(Double.valueOf(token.nextToken()))
-                    .setGct(Double.valueOf(token.nextToken()));
-            simpMessagingTemplate.convertAndSendToUser("test", "", JsonUtil.objToJson(heap));
+                    .setGct(Double.valueOf(token.nextToken()))
+                    .setDate(DateUtil.getNowDate(DateUtil.HOUR + "时" + DateUtil.MINUTE + "分"));
+            simpMessagingTemplate.convertAndSendToUser("test", "/gc/" + pid, JsonUtil.objToJson(heap));
         }
     }
 
@@ -155,31 +152,27 @@ public class JstatImpl extends BaseContinueOut implements JstatApi {
     @Override
     public void jstat(int id, JstatType type) {
         String command = type.getType(id);
-        // System.out.println("jstat id: " + id);
-        // System.out.println("jstat command: " + command);
-        this.type = type.getType();
         super.subscribe(command, true);
     }
 
     @Override
     public void jstat(int id, int time, JstatType type) {
-        String command = type.getType(id, time);
-        this.type = type.getType();
-        super.subscribe(command, true);
+        super.subscribe(type.getType(id, time), true);
     }
 
     @Override
-    protected void invoke(String data, int pid) {
-        if (type == 0) {
+    protected void invoke(String data, int pid, String command) {
+        String type = command.split(" ")[1];
+        if ("-class".equals(type)) {
             getClassLoader(data, pid);
-        } else if (type == 1) {
-            getCompiler(data, pid);
-        } else if (type == 2) {
-            getGcUtil(data, pid);
-        } else if (type == 3) {
-            getCompilation(data, pid);
-        } else if (type == 4) {
+        } else if ("-gc".equals(type)) {
             getGcHeap(data, pid);
+        } else if ("-gcutil".equals(type)) {
+            getGcUtil(data, pid);
+        } else if ("-compiler".equals(type)) {
+            getCompiler(data, pid);
+        } else if ("-printcompilation".equals(type)) {
+            getCompilation(data, pid);
         }
     }
 
