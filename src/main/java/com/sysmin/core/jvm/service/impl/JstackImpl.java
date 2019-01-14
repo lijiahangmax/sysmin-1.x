@@ -54,8 +54,11 @@ public class JstackImpl implements JstackApi {
         } else {
             int result = FileUtil.saveDataToFile(BashUtil.exec(command), path);
             if (result != 1) {
-                return null;
+                return "0";
             }
+        }
+        if (!new File(path).exists()) {
+            return "0";
         }
         return path;
     }
@@ -65,23 +68,16 @@ public class JstackImpl implements JstackApi {
         return FileUtil.listFile((String) GlobalConfig.getValue("dumpPath") + File.separatorChar + "thread");
     }
 
+    /**
+     * 获得线程快照列表
+     *
+     * @param page  当前页码
+     * @param limit 显示的条数
+     * @return 快照表格信息
+     */
     public LayuiTableVO getThreadSnap(int page, int limit) {
         List<String> paths = Arrays.asList(FileUtil.listFile((String) GlobalConfig.getValue("dumpPath") + File.separatorChar + "thread"));
-        ArrayList<SnapShotDO> list = new ArrayList<>();
-        for (int i = 0; i < paths.size(); i++) {
-            if (i >= ((page - 1) * limit) && i < ((page - 1) * limit) + limit) {
-                String s = paths.get(i);
-                String[] names = s.substring(s.lastIndexOf(File.separator) + 1, s.length()).split("_");
-                list.add(new SnapShotDO(Integer.valueOf(names[1]), new File(s).length(), DateUtil.dateFormat(names[2].substring(0, names[2].indexOf(".")), "yyyyMMddHHmmss", DateUtil.DEFAULT_FORMAT), s));
-            }
-        }
-        list.forEach(System.out::println);
-        return new LayuiTableVO(200, "", paths.size(), list);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(DateUtil.worldToDate("29/April/2016:17:38:20 +0800"));
-        // new JstackImpl().getThreadSnap(1, 10);
+        return new LayuiTableVO(0, "", paths.size(), FileUtil.limitSnapShot(paths, page, limit));
     }
 
 }

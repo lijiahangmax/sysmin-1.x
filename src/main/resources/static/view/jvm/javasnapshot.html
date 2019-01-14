@@ -9,42 +9,21 @@
 <body>
 <div class="layui-row">
 
+    <div class="layui-col-md12" style="padding-left: 20px;padding-right: 20px;margin-top: 10px;">
+        <button id="changeTable" class="layui-btn layui-btn-primary" onclick="_view.changeTable()">显示堆快照</button>
+        <span style="padding-left: 20px;color:#666;" >
+            PS:
+            <span style="padding-left: 20px;">1.大文件可能导致内存溢出</span>
+            <span style="padding-left: 20px;">2.不要同时下载多个文件</span>
+        </span>
+    </div>
     <div class="layui-col-md12" style="padding-left: 20px;padding-right: 20px;">
-        123
-    </div>
-    <div class="layui-col-md6" style="padding-left: 20px;padding-right: 20px;">
-        <div id="thread"></div>
-    </div>
-    <div class="layui-col-md6" style="padding-left: 20px;padding-right: 20px;">
-        <table class="layui-table">
-            <colgroup>
-                <col width="80">
-                <col width="90">
-                <col width="110">
-                <col>
-                <col width="70">
-            </colgroup>
-            <thead>
-            <tr>
-                <th>PID</th>
-                <th>大小</th>
-                <th>日期</th>
-                <th>路径</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>32539</td>
-                <td>600000</td>
-                <td>2016-11-29 22:56:32</td>
-                <td>D:\idea_project\project\sysmin\dump\thread\thread_27084_20190109153454.txt</td>
-                <td>
-                    <button class="layui-btn layui-btn-sm">删除</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div id="threadbox">
+            <div id="threadTable"></div>
+        </div>
+        <div id="stackbox">
+            <div id="stackTable"></div>
+        </div>
     </div>
 </div>
 </body>

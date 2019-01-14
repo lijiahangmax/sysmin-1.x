@@ -1,5 +1,6 @@
 var layer = layui.layer,
     table = layui.table,
+    form = layui.form,
     element = layui.element;
 
 // 进程id
@@ -7,16 +8,16 @@ var _pid = window.location.href.split("pid=")[1];
 
 $(function () {
     new _init();
-})
+});
 
 /**
  * 初始化
  * @private
  */
 var _init = function () {
-    $("#processinfo").text("PID: " + _pid)
+    $("#processinfospan").text("PID: " + _pid);
     _view.range(60000);
-}
+};
 
 /**
  * echart可视化
@@ -55,35 +56,29 @@ _view.range = function (timer) {
     _view.compiler();
     _view.stack();
     _echartsPoll = window.setInterval(function () {
-            // 重置保存线程快照
-            _help.threadIndex = 0;
-            _view.classloader();
-            _view.gc();
-            _view.gcutil();
-            _view.compiler();
-            _view.stack();
-        }, timer
-    )
-}
-
-// element.on('collapse(tableBox)', function (data) {
-//     // console.log(data.show);
-// });
+        _help.clearCreateIndex();
+        _view.classloader();
+        _view.gc();
+        _view.gcutil();
+        _view.compiler();
+        _view.stack();
+    }, timer)
+};
 
 /**
  * 停止渲染
  */
 _view.shopRange = function () {
     window.clearInterval(_echartsPoll)
-}
+};
 
 /**
  * 渲染classloader Echarts
  */
 _view.classloader = function () {
-    var classloader = echarts.init(document.getElementById('classloadermain'));
-    var classloadertime = echarts.init(document.getElementById('classloadertimemain'));
-    var classbyte = echarts.init(document.getElementById('classbytemain'));
+    var classLoader = echarts.init(document.getElementById('classloadermain'));
+    var classLoaderTime = echarts.init(document.getElementById('classloadertimemain'));
+    var classByte = echarts.init(document.getElementById('classbytemain'));
     var _caches = cache.getCache("classloader", "classloader" + _pid);
     var _date = [],
         _loaded = [],
@@ -92,16 +87,16 @@ _view.classloader = function () {
         _loadedBytes = [],
         _unloadedBytes = [];
     $.each(_caches, function (index, data) {
-        var _data = eval('(' + data + ')')
-        _date.push(_data.date)
-        _loaded.push(_data.loaded)
-        _unloaded.push(_data.unloaded)
-        _time.push(_data.time)
-        _loadedBytes.push(_data.loadedBytes)
+        var _data = eval('(' + data + ')');
+        _date.push(_data.date);
+        _loaded.push(_data.loaded);
+        _unloaded.push(_data.unloaded);
+        _time.push(_data.time);
+        _loadedBytes.push(_data.loadedBytes);
         _unloadedBytes.push(_data.unloadedBytes)
-    })
+    });
 
-    var classloaderoption = {
+    var classLoaderOption = {
         title: {
             text: 'Loader',
             left: '4%'
@@ -146,7 +141,7 @@ _view.classloader = function () {
             }
         ]
     };
-    var classloadertimeoption = {
+    var classLoaderTimeOption = {
         title: {
             text: 'LoaderTime',
             left: '4%'
@@ -185,7 +180,7 @@ _view.classloader = function () {
             }
         ]
     };
-    var classbyteoption = {
+    var classByteOption = {
         title: {
             text: 'LoaderBytes',
             left: '4%'
@@ -231,10 +226,10 @@ _view.classloader = function () {
         ]
     };
 
-    classloader.setOption(classloaderoption);
-    classloadertime.setOption(classloadertimeoption);
-    classbyte.setOption(classbyteoption);
-}
+    classLoader.setOption(classLoaderOption);
+    classLoaderTime.setOption(classLoaderTimeOption);
+    classByte.setOption(classByteOption);
+};
 
 /**
  * 渲染classloader Table
@@ -254,7 +249,7 @@ _table.classloader = function () {
         , width: $("#tableBox").css("width").substring(0, $("#tableBox").css("width").length - 2) - 50
         , limit: 10
     });
-}
+};
 
 /**
  * 渲染gc Echarts
@@ -311,7 +306,7 @@ _view.gc = function () {
         _gct.push(_data.gct);
     })
 
-    var gcscoption = {
+    var gcscOption = {
         title: {
             text: 's0c & s1c',
             left: '4%'
@@ -356,7 +351,7 @@ _view.gc = function () {
             }
         ]
     };
-    var gcsuoption = {
+    var gcsuOption = {
         title: {
             text: 's0u & s1u',
             left: '4%'
@@ -401,7 +396,7 @@ _view.gc = function () {
             }
         ]
     };
-    var gceoption = {
+    var gceOption = {
         title: {
             text: 'ec & eu',
             left: '4%'
@@ -446,7 +441,7 @@ _view.gc = function () {
             }
         ]
     };
-    var gcooption = {
+    var gcoOption = {
         title: {
             text: 'oc & ou',
             left: '4%'
@@ -491,7 +486,7 @@ _view.gc = function () {
             }
         ]
     };
-    var gcmoption = {
+    var gcmOption = {
         title: {
             text: 'mc & mu',
             left: '4%'
@@ -536,7 +531,7 @@ _view.gc = function () {
             }
         ]
     };
-    var gcccsoption = {
+    var gcccsOption = {
         title: {
             text: 'ccsc & ccsu',
             left: '4%'
@@ -581,7 +576,7 @@ _view.gc = function () {
             }
         ]
     };
-    var gcyfgcoption = {
+    var gcyfgcOption = {
         title: {
             text: 'ygc & fgc',
             left: '4%'
@@ -626,7 +621,7 @@ _view.gc = function () {
             }
         ]
     };
-    var gcyfgctoption = {
+    var gcyfgctOption = {
         title: {
             text: 'ygct & fgct',
             left: '4%'
@@ -671,7 +666,7 @@ _view.gc = function () {
             }
         ]
     };
-    var gcgctoption = {
+    var gcgctOption = {
         title: {
             text: 'gct',
             left: '4%'
@@ -711,17 +706,16 @@ _view.gc = function () {
         ]
     };
 
-    gcsc.setOption(gcscoption);
-    gcsu.setOption(gcsuoption);
-    gce.setOption(gceoption);
-    gco.setOption(gcooption);
-    gcm.setOption(gcmoption);
-    gcccs.setOption(gcccsoption);
-    gcyfgc.setOption(gcyfgcoption);
-    gcyfgct.setOption(gcyfgctoption);
-    gcgct.setOption(gcgctoption);
-
-}
+    gcsc.setOption(gcscOption);
+    gcsu.setOption(gcsuOption);
+    gce.setOption(gceOption);
+    gco.setOption(gcoOption);
+    gcm.setOption(gcmOption);
+    gcccs.setOption(gcccsOption);
+    gcyfgc.setOption(gcyfgcOption);
+    gcyfgct.setOption(gcyfgctOption);
+    gcgct.setOption(gcgctOption);
+};
 
 /**
  * 渲染gc Table
@@ -753,7 +747,7 @@ _table.gc = function () {
         , width: $("#tableBox").css("width").substring(0, $("#tableBox").css("width").length - 2) - 50
         , limit: 10
     });
-}
+};
 
 /**
  * 渲染gcutil Echarts
@@ -779,7 +773,7 @@ _view.gcutil = function () {
         _ccs.push(_data.ccs);
     })
 
-    var gcutiloption = {
+    var gcutilOption = {
         title: {
             text: 'gc统计 (gcutil)',
             left: '4%'
@@ -858,9 +852,8 @@ _view.gcutil = function () {
             }
         ]
     };
-
-    gcutil.setOption(gcutiloption);
-}
+    gcutil.setOption(gcutilOption);
+};
 
 /**
  * 渲染gcutil Table
@@ -886,7 +879,7 @@ _table.gcutil = function () {
         , width: $("#tableBox").css("width").substring(0, $("#tableBox").css("width").length - 2) - 50
         , limit: 10
     });
-}
+};
 
 /**
  * 渲染compiler Echarts
@@ -897,7 +890,7 @@ _view.compiler = function () {
     var _date = [],
         _compiled = [],
         _failed = [],
-        _invalid = []
+        _invalid = [];
 
     $.each(_caches, function (index, data) {
         var _data = eval('(' + data + ')');
@@ -905,9 +898,9 @@ _view.compiler = function () {
         _compiled.push(_data.compiled);
         _failed.push(_data.failed);
         _invalid.push(_data.invalid);
-    })
+    });
 
-    var compileroption = {
+    var compilerOption = {
         title: {
             text: 'compiler',
             left: '4%'
@@ -958,9 +951,8 @@ _view.compiler = function () {
             }
         ]
     };
-
-    compiler.setOption(compileroption);
-}
+    compiler.setOption(compilerOption);
+};
 
 /**
  * 渲染compiler Table
@@ -981,7 +973,7 @@ _table.compiler = function () {
         , width: $("#tableBox").css("width").substring(0, $("#tableBox").css("width").length - 2) - 50
         , limit: 10
     });
-}
+};
 
 /**
  * 渲染compiler Table
@@ -1000,7 +992,7 @@ _table.compilation = function () {
         , width: $("#tableBox").css("width").substring(0, $("#tableBox").css("width").length - 2) - 50
         , limit: 10
     });
-}
+};
 
 /**
  * 渲染stack Echarts
@@ -1022,11 +1014,11 @@ _view.stack = function () {
         _timeWaiting.push(_data.timeWaiting);
         _waiting.push(_data.waiting);
         _vmTotal.push(_data.vmTotal);
-        _blocked.push(_data.blocked)
+        _blocked.push(_data.blocked);
         _total.push(_data.total);
-    })
+    });
 
-    var stackoption = {
+    var stackOption = {
         title: {
             text: 'Thread (stack)',
             left: '4%'
@@ -1095,9 +1087,8 @@ _view.stack = function () {
             }
         ]
     };
-
-    stack.setOption(stackoption);
-}
+    stack.setOption(stackOption);
+};
 
 /**
  * 渲染stack Table
@@ -1116,7 +1107,7 @@ _table.stack = function () {
         , width: $("#tableBox").css("width").substring(0, $("#tableBox").css("width").length - 2) - 50
         , limit: 10
     });
-}
+};
 
 /**
  * ClassLoader参数信息弹出框
@@ -1127,10 +1118,11 @@ _help.classIndex = 0;
  * ClassLoader参数信息
  */
 _help.classInfo = function () {
-    if (_help.classIndex == 0) {
+    if (_help.classIndex === 0) {
         layer.open({
             type: 1,
             shade: 0,
+            skin: "layui-layer-molv",
             title: "ClassLoader参数",
             content: '<div style="margin-top: 10px;margin-bottom: 10px;margin-left: 10px;margin-right: 10px;line-height: 30px;">' +
             '<p>loaded: 装载class的数量</p>' +
@@ -1147,7 +1139,7 @@ _help.classInfo = function () {
             }
         });
     }
-}
+};
 
 /**
  * GC参数信息弹出框
@@ -1158,10 +1150,11 @@ _help.gcIndex = 0;
  * GC参数信息
  */
 _help.gcInfo = function () {
-    if (_help.gcIndex == 0) {
+    if (_help.gcIndex === 0) {
         layer.open({
             type: 1,
             shade: 0,
+            skin: "layui-layer-molv",
             title: "GC参数",
             content: '<div style="margin-top: 10px;margin-bottom: 10px;margin-left: 10px;margin-right: 10px;line-height: 30px;">' +
             '<p>s0c: 年轻代中第一个幸存区的容量 （字节）</p>' +
@@ -1190,7 +1183,7 @@ _help.gcInfo = function () {
             }
         });
     }
-}
+};
 
 /**
  * GC统计参数信息弹出框
@@ -1201,10 +1194,11 @@ _help.gcUtilIndex = 0;
  * GC统计参数信息
  */
 _help.gcUtilInfo = function () {
-    if (_help.gcUtilIndex == 0) {
+    if (_help.gcUtilIndex === 0) {
         layer.open({
             type: 1,
             shade: 0,
+            skin: "layui-layer-molv",
             title: "GCUtil参数",
             content: '<div style="margin-top: 10px;margin-bottom: 10px;margin-left: 10px;margin-right: 10px;line-height: 30px;">' +
             '<p>s0: 年轻代中第一个幸存区使用比例</p>' +
@@ -1222,7 +1216,7 @@ _help.gcUtilInfo = function () {
             }
         });
     }
-}
+};
 
 /**
  * 编译(JIT)参数信息弹出框
@@ -1233,10 +1227,11 @@ _help.compilerIndex = 0;
  * 编译(JIT)参数信息
  */
 _help.compilerInfo = function () {
-    if (_help.compilerIndex == 0) {
+    if (_help.compilerIndex === 0) {
         layer.open({
             type: 1,
             shade: 0,
+            skin: "layui-layer-molv",
             title: "编译(JIT)参数",
             content: '<div style="margin-top: 10px;margin-bottom: 10px;margin-left: 10px;margin-right: 10px;line-height: 30px;">' +
             '<p>Compiled: 编译任务的数量</p>' +
@@ -1257,7 +1252,7 @@ _help.compilerInfo = function () {
             }
         });
     }
-}
+};
 
 /**
  * jstack Thread 参数信息弹出框
@@ -1268,10 +1263,11 @@ _help.jstackIndex = 0;
  * jstack Thread 参数信息
  */
 _help.jstackInfo = function () {
-    if (_help.jstackIndex == 0) {
+    if (_help.jstackIndex === 0) {
         layer.open({
             type: 1,
             shade: 0,
+            skin: "layui-layer-molv",
             title: "Jstack Thread 参数",
             content: '<div style="margin-top: 10px;margin-bottom: 10px;margin-left: 10px;margin-right: 10px;line-height: 30px;">' +
             '<p>Running: 正在运行的线程数</p>' +
@@ -1289,34 +1285,196 @@ _help.jstackInfo = function () {
             }
         });
     }
-}
+};
 
 /**
- * 保存堆快照
+ * 堆快照弹出框索引
+ */
+_help.stackSnapIndex = 0;
+
+/**
+ * 堆快照弹出框
+ */
+_help.stackSnapLayer;
+
+/**
+ * 选择保存的堆快照
+ */
+_help.showStackSnap = function () {
+    if (_help.stackSnapIndex === 0) {
+        _help.stackSnapLayer = layer.open({
+            type: 1,
+            shade: 0,
+            skin: "layui-layer-lan",
+            title: "选择快照类型",
+            content: '<div class="layui-row" style="margin-top: 10px;margin-bottom: 10px;margin-left: 10px;margin-right: 10px;line-height: 30px;height: 220px;width: 280px;">' +
+            '<div class="layui-form">' +
+            '<div class="layui-col-md9">' +
+            '<div class="layui-form-item">' +
+            '<div class="layui-input-inline">' +
+            '<select class="layui-input" id="stacktype" name="city">' +
+            '<option value="1">堆快照</option>' +
+            '<option value="2">堆对象信息</option>' +
+            '<option value="3">堆信息</option>' +
+            '<option value="4">堆中未完成对象信息</option>' +
+            '</select>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="layui-col-md3">' +
+            '<button class="layui-btn layui-btn-normal" onclick="_help.createStackSnap()">导出</button>' +
+            '</div>' +
+            '</div>' +
+            '</div>',
+            success: function (layero, index) {
+                form.render('select');
+                _help.stackSnapIndex++;
+            },
+            cancel: function (index, layero) {
+                _help.stackSnapIndex--;
+            }
+        });
+    }
+};
+
+/**
+ * 堆快照下标
+ * @type {number}
+ */
+_help.stackSelectIndex1 = 0;
+_help.stackSelectIndex2 = 0;
+_help.stackSelectIndex3 = 0;
+_help.stackSelectIndex4 = 0;
+
+// 重置保存快照
+_help.clearCreateIndex = function () {
+    _help.stackSelectIndex1 = 0;
+    _help.stackSelectIndex2 = 0;
+    _help.stackSelectIndex3 = 0;
+    _help.stackSelectIndex4 = 0;
+    _help.threadSanpIndex = 0;
+};
+
+/**
+ * 创建堆快照
  */
 _help.createStackSnap = function () {
-
-}
+    layer.close(_help.stackSnapLayer);
+    _help.stackSnapIndex = 0;
+    let _stackType = $("#stacktype").val();
+    if (_stackType == 1) {
+        if (_help.stackSelectIndex1 === 1) {
+            _view.warningTips("已经创建过堆快照了,稍等一下吧");
+            return;
+        }
+    } else if (_stackType == 2) {
+        if (_help.stackSelectIndex2 === 1) {
+            _view.warningTips("已经创建过堆对象信息了,稍等一下吧");
+            return;
+        }
+    } else if (_stackType == 3) {
+        if (_help.stackSelectIndex3 === 1) {
+            _view.warningTips("已经创建过堆信息了,稍等一下吧");
+            return;
+        }
+    } else if (_stackType == 4) {
+        if (_help.stackSelectIndex4 === 1) {
+            _view.warningTips("已经创建过堆中未完成对象信息了,稍等一下吧");
+            return;
+        }
+    }
+    _view.loading();
+    $.post("/createstacksnap", {
+        pid: _pid,
+        type: _stackType
+    }, function (data) {
+        if (data === 0) {
+            _view.closeLoading();
+            layer.msg('创建失败' + data, {icon: 2});
+        } else {
+            _view.closeLoading();
+            if (_stackType == 1) {
+                _help.stackSelectIndex1 = 1;
+            } else if (_stackType == 2) {
+                _help.stackSelectIndex2 = 1;
+            } else if (_stackType == 3) {
+                _help.stackSelectIndex3 = 1;
+            } else if (_stackType == 4) {
+                _help.stackSelectIndex4 = 1;
+            }
+            layer.msg('创建成功' + data, {icon: 1});
+        }
+    })
+};
 
 /**
  * 线程快照下标
  * @type {number}
  */
-_help.threadIndex = 0;
+_help.threadSanpIndex = 0;
 
 /**
  * 保存线程快照
  */
 _help.createThreadSnap = function () {
-    if (_help.threadIndex == 0) {
+    if (_help.threadSanpIndex === 0) {
+        _view.loading();
         $.post("/createthreadsnap", {
             pid: _pid
         }, function (data) {
-            _help.threadIndex++;
-            layer.msg('快照创建成功' + data, {icon: 1});
+            if (data === 0) {
+                _view.closeLoading();
+                layer.msg('快照创建失败', {icon: 2});
+            } else {
+                _view.closeLoading();
+                _help.threadSanpIndex++;
+                layer.msg('快照创建成功' + data, {icon: 1});
+            }
         })
     } else {
-        layer.msg("已经创建过了,稍等一下吧", function () {
-        })
+        _view.warningTips("已经创建过线程快照了,稍等一下吧")
     }
-}
+};
+
+/**
+ * 警告提示
+ * @param message 提示信息
+ */
+_view.warningTips = function (message) {
+    layer.msg(message, function () {
+    });
+};
+
+/**
+ * 加载层的索引
+ */
+_view.loadingIndex;
+
+/**
+ * 启用加载层
+ */
+_view.loading = function () {
+    _view.loadingIndex = layer.load();
+};
+
+/**
+ * 关闭加载层
+ */
+_view.closeLoading = function () {
+    layer.close(_view.loadingIndex);
+};
+
+/**
+ * 获得进程参数信息
+ */
+_help.flags = function () {
+    $.each(cache.getCache("jps", _pid), function (index, _data) {
+        if (_data !== "") {
+            $("#jvm_flag").append("<div style='padding-left: 10px;padding-right: 10px;padding-bottom: 10px;'>" +
+                "<p>" +
+                _data +
+                "</p>" +
+                "</div>")
+        }
+    })
+};

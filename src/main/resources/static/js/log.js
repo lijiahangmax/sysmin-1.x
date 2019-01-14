@@ -27,23 +27,22 @@ var _listenerStatus = cache.getCache("config", "switchLog");
 
 $(function () {
     new _init();
-})
+});
 
 /**
  * 初始化
  * @private
  */
 var _init = function () {
-
     // 如果已监听 修改开关状态
     if (_listenerStatus != 0) {
         $("#subscription").prop("checked", true);
         form.render("checkbox");
     }
     _logElenent.listLogFile();
-    _logElenent.appendSessionLog()
-    _socket.connectionServer()
-}
+    _logElenent.appendSessionLog();
+    _socket.connectionServer();
+};
 
 /**
  * websocket 配置
@@ -58,26 +57,26 @@ var _socket = new Object();
 _socket.init = function () {
     _sockJS = new SockJS("/sock");
     _stompClient = Stomp.over(_sockJS);
-}
+};
 
 /**
  * 打开双通道 连接服务端
  */
 _socket.connectionServer = function () {
-    if (_connection == 0 && _sockJS == null && _stompClient == null) {
+    if (_connection === 0 && _sockJS === undefined && _stompClient === undefined) {
         _socket.init()
     }
-    if (_connection == 0) {
+    if (_connection === 0) {
         _stompClient.connect({}, function () {
             _connection = 1;
-            if (_listenerStatus != 0) {
+            if (_listenerStatus !== 0) {
                 _socket.subscription();
             }
         }, function () {
             layer.alert("监听日志失败！")
         });
     }
-}
+};
 
 /**
  * 监听开关
@@ -85,10 +84,10 @@ _socket.connectionServer = function () {
 form.on('switch(subscript)', function (data) {
     if (this.checked) {
         _socket.subscription();
-        cache.addCache("config", "switchLog", "1")
+        cache.addCache("config", "switchLog", "1");
     } else {
         _socket.unSubscription();
-        cache.addCache("config", "switchLog", "0")
+        cache.addCache("config", "switchLog", "0");
     }
 });
 
@@ -97,31 +96,31 @@ form.on('switch(subscript)', function (data) {
  */
 $("#cache_file").click(function () {
     $.post("/logcache", {}, function (data) {
-        if (data == 0) {
+        if (data === 0) {
             layer.msg('缓存失败', {icon: 2});
-        } else if (data == 1) {
+        } else if (data === 1) {
             layer.msg('缓存成功', {icon: 1});
             _logElenent.listLogFile();
-        } else if (data == 2) {
+        } else if (data === 2) {
             layer.msg('无日志', {icon: 4});
         }
-    })
-})
+    });
+});
 
 /**
  * 监听清除缓存
  */
 $("#clean_cache").click(function () {
-    cache.cleanCache("logcache")
+    cache.cleanCache("logcache");
     layer.msg('清除完成', {icon: 1});
-})
+});
 
 /**
  *  订阅
  */
 _socket.subscription = function () {
-    if (_connection == 1) {
-        if (_subQueue != 1) {
+    if (_connection === 1) {
+        if (_subQueue !== 1) {
             _subscribeQueue = _stompClient.subscribe('/user/' + _userId + '/log', function (log) {
                 if (_filePage) {
                     cache.addCache("log", eval("(" + log.body + ")").id, log);
@@ -132,22 +131,22 @@ _socket.subscription = function () {
             });
             _subQueue = 1;
         }
-    } else if (_connection == 0) {
+    } else if (_connection === 0) {
         layer.alert("监听日志失败！")
     }
-}
+};
 
 /**
  * 取消订阅
  */
 _socket.unSubscription = function () {
-    if (_subscribeQueue != null && _connection == 1) {
-        if (_subQueue == 1) {
+    if (_subscribeQueue !== undefined && _connection === 1) {
+        if (_subQueue === 1) {
             _subscribeQueue.unsubscribe();
             _subQueue = 0;
         }
     }
-}
+};
 
 /**
  * 点击文件列表文件
@@ -159,12 +158,12 @@ $(document.body).on('click', '.logfile', function () {
         path: $(this).attr("path")
     }, function (data) {
         var _lines = data.split("\n");
-        $("#logcontainer").html("")
+        $("#logcontainer").html("");
         for (var i = 0; i < _lines.length; i++) {
-            $("#logcontainer").append("<p>" + _lines[i] + "</p>")
+            $("#logcontainer").append("<p>" + _lines[i] + "</p>");
         }
-    })
-})
+    });
+});
 
 /**
  * 日志元素
@@ -179,7 +178,7 @@ var _logElenent = new Object();
 _logElenent.listLogFile = function () {
     $.post("/listlogfiles", {}, function (data) {
         var _files = eval(data);
-        $("#logfiles").html("")
+        $("#logfiles").html("");
         for (var i = 0; i < _files.length; i++) {
             var file = _files[i].split(_separator);
             $("#logfiles").append("<div>" +
@@ -187,10 +186,10 @@ _logElenent.listLogFile = function () {
                 file[file.length - 1] +
                 "</p>" +
                 "</div>"
-            )
+            );
         }
-    })
-}
+    });
+};
 
 /**
  * 关闭文件
@@ -200,8 +199,8 @@ _logElenent.xfile = function () {
     _pageElement.xFileHide();
     $("#logcontainer").html("");
     _filePage = false;
-    _logElenent.appendSessionLog()
-}
+    _logElenent.appendSessionLog();
+};
 
 /**
  * 打印拼接日志
@@ -216,18 +215,18 @@ _logElenent.printLog = function (log) {
         "<div class='layui-col-md5'>" + _log.log + "</div>" +
         "</div><br/>");
     cache.addCache("logcache", _log.id, log)
-}
+};
 
 /**
  * 拼接缓存中的日志
  */
 _logElenent.appendSessionLog = function () {
     // log页面接收的数据
-    var cachedata = cache.getCache("logcache");
-    var _cachedata = eval(cachedata);
-    $.each(_cachedata, function (key, log) {
+    var cacheData = cache.getCache("logcache");
+    var _cacheData = eval(cacheData);
+    $.each(_cacheData, function (key, log) {
         _logElenent.printLog(log);
-    })
+    });
     // index页面接收的数据
     var data = cache.getCache("log");
     var _data = eval(data);
@@ -235,7 +234,7 @@ _logElenent.appendSessionLog = function () {
         _logElenent.printLog(log.body);
         cache.removeCache("log", key)
     })
-}
+};
 
 /**
  * 页面元素
@@ -249,32 +248,32 @@ var _pageElement = new Object();
  */
 _pageElement.dotShow = function () {
     parent.pageElement.logDotShow();
-}
+};
 
 /**
  * 隐藏面包屑
  */
 _pageElement.dotHide = function () {
     parent.pageElement.logDotHide();
-}
+};
 
 /**
  * 隐藏关闭文件按钮
  */
 _pageElement.xFileHide = function () {
     $("#xfile").hide();
-}
+};
 
 /**
  * 显示关闭文件按钮
  */
 _pageElement.xFileShow = function () {
-    if ($("#toolsbox").children().length == 2) {
+    if ($("#toolsbox").children().length === 2) {
         $("#toolsbox").append('<button id="xfile" onclick="_logElenent.xfile()" class="layui-btn layui-btn-primary layui-anim layui-anim-scale">' +
             '<i class="layui-icon layui-icon-close"></i>关闭文件' +
             '</button>')
     } else {
         $("#xfile").show();
     }
-}
+};
 

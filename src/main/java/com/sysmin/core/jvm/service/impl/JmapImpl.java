@@ -1,13 +1,19 @@
 package com.sysmin.core.jvm.service.impl;
 
+import com.sysmin.core.jvm.domain.SnapShotDO;
 import com.sysmin.core.jvm.enums.JmapType;
 import com.sysmin.core.jvm.service.api.JmapApi;
 import com.sysmin.global.GlobalConfig;
+import com.sysmin.global.LayuiTableVO;
 import com.sysmin.util.BashUtil;
+import com.sysmin.util.DateUtil;
 import com.sysmin.util.FileUtil;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author:Li
@@ -37,4 +43,15 @@ public class JmapImpl implements JmapApi {
         return FileUtil.listFile((String) GlobalConfig.getValue("dumpPath") + File.separatorChar + "heap");
     }
 
+    /**
+     * 获得堆快照列表
+     *
+     * @param page  当前页码
+     * @param limit 显示的条数
+     * @return 快照表格信息
+     */
+    public LayuiTableVO getStackSnap(int page, int limit) {
+        List<String> paths = Arrays.asList(FileUtil.listFile((String) GlobalConfig.getValue("dumpPath") + File.separatorChar + "heap"));
+        return new LayuiTableVO(0, "", paths.size(), FileUtil.limitSnapShot(paths, page, limit));
+    }
 }

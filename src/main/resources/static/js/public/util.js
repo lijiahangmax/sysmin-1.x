@@ -6,7 +6,7 @@ var util = new Object();
  */
 util.loadCSS = function (href) {
     layui.link(href);
-}
+};
 
 /**
  * 获取设备信息
@@ -19,7 +19,7 @@ util.getDevice = function (name) {
     } else {
         return layui.device(name);
     }
-}
+};
 
 /**
  * 动态加载js
@@ -32,7 +32,7 @@ util.loadJS = function (src, callback) {
     } else {
         $.getScript(src, callback);
     }
-}
+};
 
 /**
  * 将数组数据只保留 几条
@@ -45,7 +45,7 @@ util.getArrayData = function (data, size) {
         data.splice(0, data.length - size);
     }
     return data;
-}
+};
 
 /**
  * 数组转json数组
@@ -53,9 +53,9 @@ util.getArrayData = function (data, size) {
  * @returns {Array}
  */
 util.arrayToJSON = function (arr) {
-    var tmp = [];
+    let tmp = [];
     $.each(arr, function (index, data) {
         tmp.push(eval('(' + data + ')'))
-    })
+    });
     return tmp;
-}
+};

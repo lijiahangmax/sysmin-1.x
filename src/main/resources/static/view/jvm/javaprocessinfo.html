@@ -10,6 +10,8 @@
 <div class="layui-row" style="padding-left: 20px;padding-right: 20px;padding-top: 5px;">
     <div>
         <blockquote id="processinfo" class="site-text layui-elem-quote" style="background-color: #dddddd;">
+            <span id="processinfospan"></span>
+            <button class="layui-btn layui-btn-primary" style="margin-left: 15px;" onclick="_help.showStackSnap()">保存堆快照</button>
         </blockquote>
     </div>
 
@@ -49,6 +51,15 @@
             <h2 class="layui-colla-title" onclick="_table.stack()">10分钟Thread内统计情况(Stack)</h2>
             <div class="layui-colla-content" style="background-color: #FFFFFF;">
                 <table id="stackTable"></table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进程信息 -->
+    <div class="layui-collapse" style="margin-top: 20px;margin-bottom: 20px;" lay-accordion>
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title" onclick="_help.flags()">JVM参数信息</h2>
+            <div id="jvm_flag" class="layui-colla-content" style="background-color: #FFFFFF;">
             </div>
         </div>
     </div>
@@ -131,7 +142,6 @@
             <blockquote id="jstackinfo" class="site-text layui-elem-quote" style="background-color: #dddddd;">
                 Jstack信息
                 <button class="layui-btn layui-btn-primary" style="margin-left: 15px;" onclick="_help.jstackInfo()">参数详解</button>
-                <button class="layui-btn layui-btn-primary" style="margin-left: 15px;" onclick="_help.createStackSnap()">保存堆快照</button>
                 <button class="layui-btn layui-btn-primary" style="margin-left: 15px;" onclick="_help.createThreadSnap()">保存线程快照</button>
             </blockquote>
         </div>

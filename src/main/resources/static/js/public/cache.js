@@ -11,7 +11,7 @@ cache.addCache = function (table, key, val) {
         key: key,
         value: val
     });
-}
+};
 
 /**
  * 清空全部缓存
@@ -19,7 +19,7 @@ cache.addCache = function (table, key, val) {
  */
 cache.cleanCache = function (table) {
     layui.data(table, null)
-}
+};
 
 /**
  * 删除缓存
@@ -31,7 +31,7 @@ cache.removeCache = function (table, key) {
         key: key
         , remove: true
     });
-}
+};
 
 /**
  * 得到缓存
@@ -45,7 +45,7 @@ cache.getCache = function (table, key) {
     } else {
         return layui.data(table, key);
     }
-}
+};
 
 /**
  * 添加到临时缓存
@@ -58,7 +58,7 @@ cache.addSessionCache = function (table, key, val) {
         key: key,
         value: val
     });
-}
+};
 
 /**
  * 清空全部临时缓存
@@ -66,7 +66,7 @@ cache.addSessionCache = function (table, key, val) {
  */
 cache.clearSessionCache = function (table) {
     layui.sessionData(table, null)
-}
+};
 
 /**
  * 删除临时缓存
@@ -78,7 +78,7 @@ cache.removeSessionCache = function (table, key) {
         key: key
         , remove: true
     });
-}
+};
 
 /**
  * 得到临时缓存
@@ -92,4 +92,4 @@ cache.getSessionCache = function (table, key) {
     } else {
         return layui.sessionData(table, key);
     }
-}
+};

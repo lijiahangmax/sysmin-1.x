@@ -59,21 +59,30 @@ public class JpsImpl implements JpsApi {
      */
     private List<JpsDO> getJpsInfo(String command, String... lose) {
         List<JpsDO> list = new ArrayList<>();
-        String data = BashUtil.exec(command, true);
+        String data = BashUtil.exec(command);
         StringTokenizer token = new StringTokenizer(data, "\n");
         while (token.hasMoreTokens()) {
             String[] s = token.nextToken().split(" ");
-            if (s.length == 2) {
+            JpsDO jps = new JpsDO();
+            if (!"".equals(s[1])) {
                 if (Arrays.binarySearch(lose, s[1]) < 0) {
-                    list.add(new JpsDO()
-                            .setPid(Integer.valueOf(s[0]))
-                            .setName(s[1]));
+                    jps.setPid(Integer.valueOf(s[0])).setName(s[1]);
+                } else {
+                    continue;
                 }
             } else {
-                list.add(new JpsDO()
-                        .setPid(Integer.valueOf(s[0]))
-                        .setName("null"));
+                jps.setPid(Integer.valueOf(s[0])).setName("null");
             }
+            String[] flags = new String[s.length - 2];
+            System.arraycopy(s, 2, flags, 0, s.length - 2);
+            for (int i = flags.length - 1; i > 0; i--) {
+                if (!"-".equals(String.valueOf(flags[i].charAt(0)))) {
+                    flags[i - 1] = flags[i - 1] + " " + flags[i];
+                    flags[i] = "";
+                }
+            }
+            jps.setFlags(flags);
+            list.add(jps);
         }
         return list;
     }

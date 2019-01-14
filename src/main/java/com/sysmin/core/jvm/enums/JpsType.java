@@ -18,7 +18,7 @@ public enum JpsType {
     LONG;
 
     /**
-     * 命令类型 0:jps  1:jps -l
+     * 命令类型 0:jps -v  1:jps -lv
      */
     private int type;
 
@@ -35,13 +35,13 @@ public enum JpsType {
         switch (this) {
             case DEFAULT:
                 type = 0;
-                return "jps";
+                return "jps -v";
             case LONG:
                 type = 1;
-                return "jps -l";
+                return "jps -lv";
             default:
                 type = 0;
-                return "jps";
+                return "jps -v";
         }
     }
 

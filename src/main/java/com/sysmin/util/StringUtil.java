@@ -1005,15 +1005,19 @@ public class StringUtil {
             return n;
         }
         d = new int[n + 1][m + 1];
-        for (i = 0; i <= n; i++) { // 初始化第一列
+
+        // 初始化第一列
+        for (i = 0; i <= n; i++) {
             d[i][0] = i;
         }
 
-        for (j = 0; j <= m; j++) { // 初始化第一行
+        // 初始化第一行
+        for (j = 0; j <= m; j++) {
             d[0][j] = j;
         }
 
-        for (i = 1; i <= n; i++) { // 遍历str
+        // 遍历str
+        for (i = 1; i <= n; i++) {
             ch1 = str1.charAt(i - 1);
             // 去匹配target
             for (j = 1; j <= m; j++) {
