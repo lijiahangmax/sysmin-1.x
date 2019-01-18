@@ -1,0 +1,20 @@
+/**
+  layer 黑色皮肤
+ */
+body .layui-layer-hei .layui-layer-title {
+    background: #20222A;
+    color: #fff;
+    border: none;
+}
+
+body .layui-layer-hei .layui-layer-btn {
+    border-top: 1px solid #E9E7E7
+}
+
+body .layui-layer-hei .layui-layer-btn a {
+    background: #333;
+}
+
+body .layui-layer-hei .layui-layer-btn .layui-layer-btn1 {
+    background: #999;
+}

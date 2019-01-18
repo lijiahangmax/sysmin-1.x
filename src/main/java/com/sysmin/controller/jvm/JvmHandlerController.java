@@ -1,5 +1,6 @@
 package com.sysmin.controller.jvm;
 
+import com.sysmin.core.jvm.JavaProperties;
 import com.sysmin.core.jvm.domain.JstackDO;
 import com.sysmin.core.jvm.enums.JmapType;
 import com.sysmin.core.jvm.enums.JstackType;
@@ -12,6 +13,7 @@ import com.sysmin.core.log.Log;
 import com.sysmin.core.log.LogType;
 import com.sysmin.global.LayuiTableVO;
 import com.sysmin.util.FileUtil;
+import com.sysmin.util.StringUtil;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -236,6 +238,24 @@ public class JvmHandlerController {
     @ResponseBody
     public int deleteSnap(String path) {
         return new File(FileUtil.replacePath(path.replaceAll("\\,", "\\/"))).delete() ? 1 : 0;
+    }
+
+    @RequestMapping("/getjavahome")
+    @ResponseBody
+    public String getJavaHome() {
+        return StringUtil.htmlEncode(JavaProperties.JAVA_HOME);
+    }
+
+    @RequestMapping("/getjavaversion")
+    @ResponseBody
+    public String getJavaVersion() {
+        return StringUtil.htmlEncode(JavaProperties.JAVA_VERSION);
+    }
+
+    @RequestMapping("/getjavavendor")
+    @ResponseBody
+    public String getJavaVendor() {
+        return StringUtil.htmlEncode(JavaProperties.JAVA_VENDOR);
     }
 
 }

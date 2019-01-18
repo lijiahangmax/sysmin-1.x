@@ -7,14 +7,29 @@
     <link href="../../ico/favicon.ico" rel="icon" type="image/x-icon"/>
 </head>
 <body>
+<div class="layui-row" style="padding-top: 30px;">
+    <div class="layui-col-md4" style="padding-left: 30px;padding-right: 30px;">
+        <div class="layui-card">
+            <div class="layui-card-header">JAVA_VERSION</div>
+            <div class="layui-card-body" style="height: 150px;" id="javaversion"></div>
+        </div>
+    </div>
+    <div class="layui-col-md4">
+        <div class="layui-card">
+            <div class="layui-card-header">JAVA_HOME</div>
+            <div class="layui-card-body" style="height: 150px;" id="javahome"></div>
+        </div>
+    </div>
+    <div class="layui-col-md4" style="padding-left: 30px;padding-right: 30px;">
+        <div class="layui-card">
+            <div class="layui-card-header">JAVAV_ENDOR</div>
+            <div class="layui-card-body" style="height: 150px;" id="javavendor"></div>
+        </div>
+    </div>
+</div>
 </body>
 <script src="../../lib/jquery-3.1.1.min.js" type="text/javascript"></script>
 <script src="../../lib/layui/layui.all.js" type="text/javascript"></script>
-<script src="../../lib/sockjs.min.js" type="text/javascript"></script>
 <script src="../../js/public/cache.js" type="text/javascript"></script>
-<script src="../../lib/stomp.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-    var layer = layui.layer
-    element = layui.element;
-</script>
+<script src="../../js/jvm/jvmmain.js" type="text/javascript"></script>
 </html>

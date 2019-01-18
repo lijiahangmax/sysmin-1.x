@@ -19,8 +19,10 @@ $(function () {
  * @private
  */
 var _init = function () {
+    _indexElement.getSystemType();
     _indexElement.listenerLog();
     _indexElement.appendJavaProcess();
+
 };
 
 // 主页元素
@@ -106,8 +108,8 @@ $("#jvmmom").click(function () {
         _indexElement.getStack(60000);
     }
     $.post("/monitorsize", {}, function (data) {
-        // if (data === 110) {
-        if (data === 0) {
+        if (data === 110) {
+            // if (data === 0) {
             $.post("/monitorallopt", {
                 pids: _jvmAllProcessArr.join(",")
             }, function (data) {
@@ -144,7 +146,7 @@ _indexElement.listenerJavaProcess = function (_url, _pid, _type) {
 };
 
 /**
- * 用于关闭轮询获取stack
+ * 用于关闭轮询获取stack信息
  */
 data.stackPoll;
 
@@ -157,6 +159,26 @@ _indexElement.getStack = function (timer) {
     data.stackPoll = window.setInterval(function () {
         data.getStackToCache();
     }, timer)
+};
+
+/**
+ * 系统类型  1: Linux 0: Windows
+ * @type {number}
+ */
+_indexElement.systemType = 0;
+
+/**
+ * 获得系统类型
+ */
+_indexElement.getSystemType = function () {
+    $.post("/getsystemtype", {}, function (data) {
+        _indexElement.systemType = data;
+        cache.addCache("config", "systemtype", data);
+        if (_indexElement.systemType === 0) {
+            $(".linuxservice").hide();
+            element.render('nav');
+        }
+    })
 };
 
 /**

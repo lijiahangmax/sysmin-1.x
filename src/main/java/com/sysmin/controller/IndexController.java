@@ -46,4 +46,9 @@ public class IndexController {
         return "jvm/jvmmonitor";
     }
 
+    @RequestMapping("/systemmonitor")
+    public String systemMonitor() {
+        return "system/systemmonitor";
+    }
+
 }
