@@ -19,11 +19,13 @@ var _init = function () {
         downvalue = [30, 47, 56, 80, 62, 120, 110, 105, 75, 65, 79, 56, 120];
     _view.upFlowView(update, upvalue);
     _view.downFlowView(downdate, downvalue);
-    _data.renderSystemName("LiCVMLinux");
-    _data.renderIP("192.168.165.236");
-    _data.renderLoginUsers("root root root");
-    _data.renderSystemVersion("Windows 10");
-    _data.renderRunningTime("18日14:51:37");
+    $.post("/getsysteminfo", {}, function (data) {
+        _data.renderSystemName(data.hostName);
+        _data.renderIP(data.ip);
+        _data.renderLoginUsers(data.userName);
+        _data.renderSystemVersion(data.osVersion);
+        _data.renderRunningTime(data.upTime);
+    });
 };
 
 /**
@@ -503,8 +505,14 @@ _data.shutdown = function (time) {
     layer.confirm('确定要关机吗？', {
         btn: ['确定', '取消']
     }, function (index, layero) {
-        layer.msg("关机");
         layer.close(index);
+        layer.msg('正在关机', {
+            icon: 16,
+            // time: 60 * 1000,
+            shade: 0.3
+        });
+        $.post("/halt");
+        location.reload();
     });
 };
 
@@ -516,7 +524,13 @@ _data.reboot = function (time) {
     layer.confirm('确定要重启吗？', {
         btn: ['确定', '取消']
     }, function (index, layero) {
-        layer.msg("重启");
         layer.close(index);
+        layer.msg('正在重启', {
+            icon: 16,
+            // time: 60 * 1000,
+            shade: 0.3
+        });
+        $.post("/reboot");
+        location.reload();
     });
 };

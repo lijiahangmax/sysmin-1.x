@@ -69,7 +69,7 @@ public class SystemInfo {
                 // 系统版本
                 String os = StringUtil.replaceLine(BashUtil.exec("cat /proc/version"));
                 // ip
-                GlobalConfig.setValue("ip", StringUtil.replaceLine(BashUtil.exec("hostname -I", true)));
+                GlobalConfig.setValue("ip", StringUtil.replaceLine(BashUtil.exec("hostname -I")));
                 return Integer.valueOf(os.substring(os.indexOf("el") + 2, os.indexOf("el") + 3));
             } else {
                 return 0;

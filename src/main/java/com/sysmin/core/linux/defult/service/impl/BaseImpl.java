@@ -22,6 +22,11 @@ import java.util.StringTokenizer;
 public class BaseImpl implements BaseApi {
 
     @Override
+    public String hostName() {
+        return BashUtil.exec("hostname");
+    }
+
+    @Override
     public int chmod(String file, int mod) throws FileNotFoundException {
         String status = (BashUtil.exec("chmod " + mod + " " + file));
         if (!new File(file).exists()) {

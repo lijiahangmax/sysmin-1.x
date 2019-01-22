@@ -13,6 +13,13 @@ import java.util.ArrayList;
 public interface BaseApi {
 
     /**
+     * 获得系统名称
+     *
+     * @return 系统名称
+     */
+    String hostName();
+
+    /**
      * 修改权限
      *
      * @param file 文件

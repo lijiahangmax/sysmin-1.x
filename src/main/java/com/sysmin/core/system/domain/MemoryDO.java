@@ -6,7 +6,7 @@ package com.sysmin.core.system.domain;
  * @version: 1.0.0
  * free -s 1
  */
-public class MemoryDo {
+public class MemoryDO {
 
     /**
      * 物理内存总量total=used + free
@@ -67,7 +67,7 @@ public class MemoryDo {
         return memTotal;
     }
 
-    public MemoryDo setMemTotal(Long memTotal) {
+    public MemoryDO setMemTotal(Long memTotal) {
         this.memTotal = memTotal;
         return this;
     }
@@ -76,7 +76,7 @@ public class MemoryDo {
         return memUsed;
     }
 
-    public MemoryDo setMemUsed(Long memUsed) {
+    public MemoryDO setMemUsed(Long memUsed) {
         this.memUsed = memUsed;
         return this;
     }
@@ -85,7 +85,7 @@ public class MemoryDo {
         return memFree;
     }
 
-    public MemoryDo setMemFree(Long memFree) {
+    public MemoryDO setMemFree(Long memFree) {
         this.memFree = memFree;
         return this;
     }
@@ -94,7 +94,7 @@ public class MemoryDo {
         return memShared;
     }
 
-    public MemoryDo setMemShared(Long memShared) {
+    public MemoryDO setMemShared(Long memShared) {
         this.memShared = memShared;
         return this;
     }
@@ -103,7 +103,7 @@ public class MemoryDo {
         return memBuffers;
     }
 
-    public MemoryDo setMemBuffers(Long memBuffers) {
+    public MemoryDO setMemBuffers(Long memBuffers) {
         this.memBuffers = memBuffers;
         return this;
     }
@@ -112,7 +112,7 @@ public class MemoryDo {
         return memCached;
     }
 
-    public MemoryDo setMemCached(Long memCached) {
+    public MemoryDO setMemCached(Long memCached) {
         this.memCached = memCached;
         return this;
     }
@@ -121,7 +121,7 @@ public class MemoryDo {
         return memBeUsed;
     }
 
-    public MemoryDo setMemBeUsed(Long memBeUsed) {
+    public MemoryDO setMemBeUsed(Long memBeUsed) {
         this.memBeUsed = memBeUsed;
         return this;
     }
@@ -130,7 +130,7 @@ public class MemoryDo {
         return memBeFree;
     }
 
-    public MemoryDo setMemBeFree(Long memBeFree) {
+    public MemoryDO setMemBeFree(Long memBeFree) {
         this.memBeFree = memBeFree;
         return this;
     }
@@ -139,7 +139,7 @@ public class MemoryDo {
         return swapTotal;
     }
 
-    public MemoryDo setSwapTotal(Long swapTotal) {
+    public MemoryDO setSwapTotal(Long swapTotal) {
         this.swapTotal = swapTotal;
         return this;
     }
@@ -148,7 +148,7 @@ public class MemoryDo {
         return swapUsed;
     }
 
-    public MemoryDo setSwapUsed(Long swapUsed) {
+    public MemoryDO setSwapUsed(Long swapUsed) {
         this.swapUsed = swapUsed;
         return this;
     }
@@ -157,7 +157,7 @@ public class MemoryDo {
         return swapFree;
     }
 
-    public MemoryDo setSwapFree(Long swapFree) {
+    public MemoryDO setSwapFree(Long swapFree) {
         this.swapFree = swapFree;
         return this;
     }

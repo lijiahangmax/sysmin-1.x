@@ -28,14 +28,46 @@ public class BashUtil {
     private static Runtime runtime = Runtime.getRuntime();
 
     /**
-     * 执行命令操作  默认不等待执行完毕
+     * 执行命令操作  默认不等待执行完毕 UTF-8编码
      *
      * @param commands 命令
      * @return 命令返回信息
      */
     public static String exec(Object commands) {
         try {
-            return execute(commands, false);
+            return execute(commands, false, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    /**
+     * 执行命令操作 UTF-8编码
+     *
+     * @param wait     是否等待命令执行
+     * @param commands 命令
+     * @return 命令返回信息
+     */
+    public static String exec(Object commands, boolean wait) {
+        try {
+            return execute(commands, wait, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    /**
+     * 执行命令操作  默认不等待执行完毕
+     *
+     * @param commands 命令
+     * @param charset  编码类型
+     * @return 命令返回信息
+     */
+    public static String exec(Object commands, String charset) {
+        try {
+            return execute(commands, false, charset);
         } catch (IOException e) {
             e.printStackTrace();
             return "";
@@ -47,11 +79,12 @@ public class BashUtil {
      *
      * @param wait     是否等待命令执行
      * @param commands 命令
+     * @param charset  编码
      * @return 命令返回信息
      */
-    public static String exec(Object commands, boolean wait) {
+    public static String exec(Object commands, boolean wait, String charset) {
         try {
-            return execute(commands, wait);
+            return execute(commands, wait, charset);
         } catch (IOException e) {
             e.printStackTrace();
             return "";
@@ -61,7 +94,7 @@ public class BashUtil {
     /**
      * 检查命令是否有效
      *
-     * @param commands
+     * @param commands 命令
      * @return
      * @throws IOException
      */
@@ -80,9 +113,10 @@ public class BashUtil {
      *
      * @param command 命令
      * @param wait    是否等待命令执行完毕
+     * @param charset 编码
      * @return
      */
-    private static String execute(Object command, boolean wait) throws IOException {
+    private static String execute(Object command, boolean wait, String charset) throws IOException {
         StringBuilder sb = new StringBuilder();
         Process process = checkCommand(command);
         BufferedReader br;
@@ -93,13 +127,13 @@ public class BashUtil {
                 e.printStackTrace();
             }
         }
-        br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        br = new BufferedReader(new InputStreamReader(process.getInputStream(), charset));
         String line = null;
         while ((line = br.readLine()) != null) {
             sb.append(line + "\n");
         }
         br.close();
-        br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        br = new BufferedReader(new InputStreamReader(process.getErrorStream(), charset));
         while ((line = br.readLine()) != null) {
             sb.append(line + "\n");
         }

@@ -1,6 +1,6 @@
 package com.sysmin.core.system.service.impl;
 
-import com.sysmin.core.system.domain.MemoryDo;
+import com.sysmin.core.system.domain.MemoryDO;
 import com.sysmin.core.system.service.api.MemoryApi;
 import com.sysmin.global.BaseContinueOut;
 import com.sysmin.util.JsonUtil;
@@ -23,7 +23,7 @@ public class MemoryImpl extends BaseContinueOut implements MemoryApi {
     /**
      * 数据对象
      */
-    private MemoryDo memory = new MemoryDo();
+    private MemoryDO memory = new MemoryDO();
 
     @Override
     public void getMemory() {
