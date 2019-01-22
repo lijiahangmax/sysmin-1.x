@@ -17,13 +17,13 @@ public interface SystemApi {
     SystemDO getSystemInfo();
 
     /**
-     * 重启
-     */
-    void reboot();
-
-    /**
      * 关机
      */
     void halt();
+
+    /**
+     * 重启
+     */
+    void reboot();
 
 }

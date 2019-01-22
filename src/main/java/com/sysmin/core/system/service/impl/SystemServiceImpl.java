@@ -48,20 +48,20 @@ public class SystemServiceImpl implements SystemApi {
     }
 
     @Override
-    public void reboot() {
-        if (systemType == 1) {
-            baseImpl.reboot();
-        } else {
-            BashUtil.exec("shutdown -r");
-        }
-    }
-
-    @Override
     public void halt() {
         if (systemType == 1) {
             baseImpl.halt();
         } else {
             BashUtil.exec("shutdown -s -t 1");
+        }
+    }
+
+    @Override
+    public void reboot() {
+        if (systemType == 1) {
+            baseImpl.reboot();
+        } else {
+            BashUtil.exec("shutdown -r 1");
         }
     }
 
