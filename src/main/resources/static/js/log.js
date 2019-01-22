@@ -157,11 +157,18 @@ $(document.body).on('click', '.logfile', function () {
     $.post("/loadlogfile", {
         path: $(this).attr("path")
     }, function (data) {
-        var _lines = data.split("\n");
-        $("#logcontainer").html("");
-        for (var i = 0; i < _lines.length; i++) {
-            $("#logcontainer").append("<p>" + _lines[i] + "</p>");
-        }
+        let _data = eval(data),
+            _html = "";
+        $.each(_data, function (index, $data) {
+            _html += ("<div class='layui-row logs' id='log" + $data.id + "' style=''>" +
+                "<div class='layui-col-md1'>" + $data.logType + "</div>" +
+                "<div class='layui-col-md1'>" + $data.user + "</div>" +
+                "<div class='layui-col-md2'>" + $data.createTime + "</div>" +
+                "<div class='layui-col-md3'>" + $data.remake + "</div>" +
+                "<div class='layui-col-md5'>" + $data.log + "</div>" +
+                "</div><br/>");
+        });
+        $("#logcontainer").html(_html);
     });
 });
 

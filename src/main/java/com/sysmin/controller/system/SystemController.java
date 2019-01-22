@@ -1,8 +1,10 @@
 package com.sysmin.controller.system;
 
+import com.sysmin.core.log.Log;
 import com.sysmin.core.system.domain.SystemDO;
 import com.sysmin.core.system.service.impl.SystemServiceImpl;
 import com.sysmin.global.GlobalConfig;
+import com.sysmin.util.DateUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,12 +37,14 @@ public class SystemController {
 
     @RequestMapping("/halt")
     public String halt() {
+        Log.getLog("test", DateUtil.getNowDate(DateUtil.DEFAULT_FORMAT) + " halt", "halt");
         systemServiceImpl.halt();
         return "index";
     }
 
     @RequestMapping("/reboot")
     public String reboot() {
+        Log.getLog("test", DateUtil.getNowDate(DateUtil.DEFAULT_FORMAT) + " reboot", "reboot");
         systemServiceImpl.reboot();
         return "index";
     }

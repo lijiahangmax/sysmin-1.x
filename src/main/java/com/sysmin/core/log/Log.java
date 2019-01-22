@@ -49,9 +49,8 @@ public class Log {
     /**
      * 添加临时日志到容器
      */
-    private Log addCacheLog() {
+    private void addCacheLog() {
         cacheLog.add(this);
-        return this;
     }
 
     /**
@@ -60,15 +59,30 @@ public class Log {
     private Log() {
     }
 
+
+    /**
+     * 将数据转化为log对象
+     *
+     * @return log对象
+     */
+    public static Log getLogContent(long id, String logType, String user, String createTime, String remake, String log) {
+        return new Log().setId(id)
+                .setLogType(logType)
+                .setUser(user)
+                .setCreateTime(createTime)
+                .setRemake(remake)
+                .setLog(log);
+    }
+
     /**
      * 实例方法
      */
-    public static Log getLog(String user, String log, String remake) {
-        return getLog(user, log, remake,LogType.INFO);
+    public static void getLog(String user, String log, String remake) {
+        getLog(user, log, remake, LogType.INFO);
     }
 
-    public static Log getLog(String user, String log, String remake, LogType type) {
-        return new Log()
+    public static void getLog(String user, String log, String remake, LogType type) {
+        new Log()
                 .setId()
                 .setUser(user)
                 .setLog(log)
@@ -118,6 +132,11 @@ public class Log {
         return this;
     }
 
+    private Log setId(long id) {
+        this.id = id;
+        return this;
+    }
+
     public String getLogType() {
         return logType;
     }
@@ -142,6 +161,11 @@ public class Log {
 
     private Log setCreateTime() {
         this.createTime = DateUtil.getNowDate(DateUtil.DEFAULT_FORMAT);
+        return this;
+    }
+
+    private Log setCreateTime(String createTime) {
+        this.createTime = createTime;
         return this;
     }
 

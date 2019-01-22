@@ -161,6 +161,7 @@ public class JvmHandlerController {
     public String downloadSnap(String path, HttpServletRequest request, HttpServletResponse response) {
         try {
             File file = new File(FileUtil.replacePath(path.replaceAll("\\,", "\\/")));
+            Log.getLog("test", "download snap " + file.getPath(), "download snap");
             response.setContentType("text/html;charset=utf-8");
             try {
                 request.setCharacterEncoding("UTF-8");
@@ -169,12 +170,11 @@ public class JvmHandlerController {
             }
             BufferedInputStream in = null;
             BufferedOutputStream out = null;
-            String downLoadPath = FileUtil.replacePath(path.replaceAll("\\,", "\\/"));
             try {
                 response.setContentType("application/x-msdownload;");
                 response.setHeader("Content-disposition", "attachment; filename=" + new String(path.substring(path.lastIndexOf(",") + 1, path.length()).getBytes("utf-8"), "ISO8859-1"));
                 response.setHeader("Content-Length", String.valueOf(file.length()));
-                in = new BufferedInputStream(new FileInputStream(downLoadPath));
+                in = new BufferedInputStream(new FileInputStream(file));
                 out = new BufferedOutputStream(response.getOutputStream());
                 byte[] buff = new byte[2048];
                 int bytesRead;
@@ -216,6 +216,7 @@ public class JvmHandlerController {
     public ResponseEntity<byte[]> downloadSnap1(String path) {
         try {
             File file = new File(FileUtil.replacePath(path.replaceAll("\\,", "\\/")));
+            Log.getLog("test", "download snap " + file.getPath(), "download snap");
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             String show = path.substring(path.lastIndexOf(",") + 1, path.length());
@@ -237,7 +238,9 @@ public class JvmHandlerController {
     @RequestMapping("/deletesnap")
     @ResponseBody
     public int deleteSnap(String path) {
-        return new File(FileUtil.replacePath(path.replaceAll("\\,", "\\/"))).delete() ? 1 : 0;
+        String p = FileUtil.replacePath(path.replaceAll("\\,", "\\/"));
+        Log.getLog("test", "delete snap " + p, "delete snap");
+        return new File(p).delete() ? 1 : 0;
     }
 
     @RequestMapping("/getjavahome")

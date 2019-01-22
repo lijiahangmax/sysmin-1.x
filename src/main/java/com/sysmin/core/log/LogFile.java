@@ -5,6 +5,7 @@ import com.sysmin.util.DateUtil;
 import com.sysmin.util.FileUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,8 +36,14 @@ public class LogFile {
      * @param path 路径
      * @return
      */
-    public static String loadLogFile(String path) {
-        return FileUtil.getFileContent(path);
+    public static ArrayList<Log> loadLogFile(String path) {
+        String fileContent = FileUtil.getFileContent(path);
+        ArrayList<Log> logs = new ArrayList<>();
+        for (String content : fileContent.split("\n")) {
+            String[] log = content.split("\t");
+            logs.add(Log.getLogContent(Long.valueOf(log[0]), log[1], log[2], log[3], log[4], log[5]));
+        }
+        return logs;
     }
 
     /**

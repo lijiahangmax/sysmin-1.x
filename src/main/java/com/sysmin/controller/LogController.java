@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 
 /**
  * @author:Li
@@ -48,7 +49,7 @@ public class LogController {
 
     @RequestMapping("/loadlogfile")
     @ResponseBody
-    public String loadLogFile(String path) {
+    public ArrayList<Log> loadLogFile(String path) {
         return LogFile.loadLogFile(path);
     }
 
@@ -57,14 +58,6 @@ public class LogController {
     public String[] listLogFile() {
         return LogFile.listLogFile();
     }
-
-    @RequestMapping("/tt")
-    @ResponseBody
-    public String se() {
-        Log.getLog("li", "name", "asdasd");
-        return "123";
-    }
-
 
     private void accept(Log s) {
         simpMessagingTemplate.convertAndSendToUser("test", "/log", JsonUtil.objToJson(s));
