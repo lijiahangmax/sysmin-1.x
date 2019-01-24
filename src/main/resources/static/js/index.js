@@ -108,8 +108,8 @@ $("#jvmmom").click(function () {
         _indexElement.getStack(60000);
     }
     $.post("/monitorsize", {}, function (data) {
-        if (data === 110) {
-            // if (data === 0) {
+        // if (data === 110) {
+        if (data === 0) {
             $.post("/monitorallopt", {
                 pids: _jvmAllProcessArr.join(",")
             }, function (data) {
@@ -122,7 +122,7 @@ $("#jvmmom").click(function () {
 });
 
 /**
- * 情况jvm缓存数据
+ * 清除jvm缓存数据
  */
 data.clearJVMData = function () {
     cache.cleanCache("jps");

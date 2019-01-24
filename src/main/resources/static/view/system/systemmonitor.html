@@ -50,7 +50,10 @@
         <div class="layui-col-md12" style="padding: 0 15px 0 15px">
             <div class="layui-col-md6" style="padding-right: 7.5px;">
                 <div class="layui-card">
-                    <div class="layui-card-header">上传流量</div>
+                    <div class="layui-card-header">
+                        上传流量
+                        <button onclick="_data.setUpGranularity()" style="margin-left: 15px;" class="layui-btn layui-btn-normal layui-btn-sm">粒度设置</button>
+                    </div>
                     <div class="layui-card-body">
                         <div id="upFlow" style="height: 350px;"></div>
                     </div>
@@ -58,7 +61,10 @@
             </div>
             <div class="layui-col-md6" style="padding-left: 7.5px;">
                 <div class="layui-card">
-                    <div class="layui-card-header">下载流量</div>
+                    <div class="layui-card-header">
+                        下载流量
+                        <button onclick="_data.setDownGranularity()" style="margin-left: 15px;" class="layui-btn layui-btn-normal layui-btn-sm">粒度设置</button>
+                    </div>
                     <div class="layui-card-body">
                         <div id="downFlow" style="height: 350px;"></div>
                     </div>

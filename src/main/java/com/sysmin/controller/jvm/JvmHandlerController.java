@@ -69,7 +69,6 @@ public class JvmHandlerController {
         try {
             StringTokenizer token = new StringTokenizer(pids, ",");
             Log.getLog("test", "startallmonitor", "all");
-
             while (token.hasMoreTokens()) {
                 int pid = Integer.valueOf(token.nextToken());
                 new Thread(() -> {

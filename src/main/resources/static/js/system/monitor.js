@@ -534,3 +534,29 @@ _data.reboot = function (time) {
         location.reload();
     });
 };
+
+/**
+ * 渲染上传流量粒度
+ */
+_data.setUpGranularity = function () {
+    layer.prompt({
+        value: '10',
+        title: '设置粒度  默认10s',
+    }, function (value, index, elem) {
+        alert(value);
+        layer.close(index);
+    });
+};
+
+/**
+ * 渲染下载流量粒度
+ */
+_data.setDownGranularity = function () {
+    layer.prompt({
+        value: '10',
+        title: '设置粒度  默认10s',
+    }, function (value, index, elem) {
+        alert(value);
+        layer.close(index);
+    });
+};

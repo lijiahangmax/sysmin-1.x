@@ -3,6 +3,7 @@ package com.sysmin.controller.jvm;
 import com.sysmin.core.jvm.domain.JpsDO;
 import com.sysmin.core.jvm.enums.JpsType;
 import com.sysmin.core.jvm.service.impl.JpsImpl;
+import com.sysmin.core.jvm.service.impl.JstatImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,4 +27,5 @@ public class JpsController {
     public List<JpsDO> getJavaProcess() {
         return jpsImpl.jps(JpsType.DEFAULT);
     }
+
 }

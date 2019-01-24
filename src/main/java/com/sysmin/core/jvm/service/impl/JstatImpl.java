@@ -3,6 +3,8 @@ package com.sysmin.core.jvm.service.impl;
 import com.sysmin.core.jvm.domain.jstat.*;
 import com.sysmin.core.jvm.enums.JstatType;
 import com.sysmin.core.jvm.service.api.JstatApi;
+import com.sysmin.core.log.Log;
+import com.sysmin.core.log.LogType;
 import com.sysmin.global.BaseContinueOut;
 import com.sysmin.util.DateUtil;
 import com.sysmin.util.JsonUtil;
@@ -178,11 +180,11 @@ public class JstatImpl extends BaseContinueOut implements JstatApi {
 
     @Override
     protected void error(String data) {
-        System.out.println("error: " + data);
+        Log.getLog("test", data, "jstat error", LogType.ERROR);
     }
 
     @Override
     protected void destroy() {
-        System.out.println("destroy");
+        Log.getLog("test", "destroy jstat", "destroy jstat");
     }
 }

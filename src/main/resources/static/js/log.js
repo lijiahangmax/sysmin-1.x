@@ -188,7 +188,7 @@ _logElenent.listLogFile = function () {
         $("#logfiles").html("");
         for (var i = 0; i < _files.length; i++) {
             var file = _files[i].split(_separator);
-            $("#logfiles").append("<div>" +
+            $("#logfiles").append("<div style='padding: 5px 5px 10px 10px; cursor: pointer;'>" +
                 "<p path='" + _files[i] + "' class='logfile'>" +
                 file[file.length - 1] +
                 "</p>" +
