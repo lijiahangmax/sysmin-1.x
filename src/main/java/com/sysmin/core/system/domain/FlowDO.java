@@ -1,5 +1,7 @@
 package com.sysmin.core.system.domain;
 
+import com.sysmin.util.DateUtil;
+
 /**
  * @author:Li
  * @time: 2018/12/26 21:12
@@ -18,9 +20,15 @@ public class FlowDO {
      */
     private Double out;
 
+    /**
+     * 当前时间
+     */
+    private String date;
+
     public FlowDO(Double in, Double out) {
         this.in = in;
         this.out = out;
+        this.date = DateUtil.getNowDate("mm:ss");
     }
 
     public FlowDO() {
@@ -44,11 +52,20 @@ public class FlowDO {
         return this;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate() {
+        date = DateUtil.getNowDate("mm:ss");
+    }
+
     @Override
     public String toString() {
         return "FlowDO{" +
                 "in=" + in +
                 ", out=" + out +
+                ", date='" + date + '\'' +
                 '}';
     }
 }

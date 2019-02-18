@@ -5,7 +5,10 @@ import com.sysmin.core.system.service.api.MemoryApi;
 import com.sysmin.global.BaseContinueOut;
 import com.sysmin.util.JsonUtil;
 import com.sysmin.util.StringUtil;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.StringTokenizer;
 
 /**
@@ -13,7 +16,11 @@ import java.util.StringTokenizer;
  * @time: 2018/12/27 20:06
  * @version: 1.0.0
  */
+@Service
 public class MemoryImpl extends BaseContinueOut implements MemoryApi {
+
+    @Resource
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     /**
      * 行计数器
@@ -55,7 +62,7 @@ public class MemoryImpl extends BaseContinueOut implements MemoryApi {
                     .setSwapUsed(Long.valueOf(token3.nextToken()))
                     .setSwapFree(Long.valueOf(token3.nextToken()));
             // 数据输出
-            System.out.println(JsonUtil.objToJson(memory));
+            simpMessagingTemplate.convertAndSendToUser("test", "/memory", memory);
             memory.clear();
             lines = 0;
         }
@@ -68,6 +75,10 @@ public class MemoryImpl extends BaseContinueOut implements MemoryApi {
 
     @Override
     protected void destroy() {
-        System.out.println("销毁");
+        lines = 0;
+        if (MemoryImpl.systemProcess.get("free") != null) {
+            systemProcess.get("free").destroy();
+        }
+        System.out.println("memory: 销毁");
     }
 }

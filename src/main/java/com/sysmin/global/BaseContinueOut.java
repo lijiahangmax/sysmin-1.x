@@ -27,19 +27,44 @@ public abstract class BaseContinueOut {
     public static List<Process> jvmProcess = new ArrayList<>();
 
     /**
-     * 提取id
+     * 系统进程进程
+     */
+    public static Map<String, Process> systemProcess = new HashMap<>();
+
+    /**
+     * 提取id / 其他
      *
      * @param command 命令
-     * @return
+     * @return id
      */
-    public int extractId(String command) {
+    private int extractId(String command) {
         ArrayList<String> list = new ArrayList<String>(Arrays.asList(command.split(" ")));
         if (list.contains("jstat")) {
             return Integer.valueOf(list.get(2));
-        } else {
-
         }
         return 0;
+    }
+
+    /**
+     * 将进程添加到集合
+     *
+     * @param process  进程
+     * @param commands 命令
+     */
+    private void addProcess(Object commands, Process process) {
+        String command = "";
+        if (commands instanceof String) {
+            command = (String) commands;
+        } else if (commands instanceof String[]) {
+            command = Arrays.toString((String[]) commands);
+        }
+        if (command.contains("iostat")) {
+            systemProcess.put("iostat", process);
+        } else if (command.contains("ifstat")) {
+            systemProcess.put("ifstat", process);
+        } else if (command.contains("free")) {
+            systemProcess.put("free", process);
+        }
     }
 
     /**
@@ -71,6 +96,7 @@ public abstract class BaseContinueOut {
     public void subscribe(Object commands, boolean destroy, boolean useId) {
         try {
             process = BashUtil.checkCommand(commands);
+            addProcess(commands, process);
             int pid = 0;
             String type = "";
             if (useId) {

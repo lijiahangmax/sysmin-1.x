@@ -11,14 +11,16 @@
     <div class="layui-header">
         <div class="layui-logo">sysmin</div>
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="javascript:;" onclick="data.clearJVMData()">1</a></li>
-            <li class="layui-nav-item"><a href="javascript:;" onclick="cache.cleanCache('config')">2</a></li>
-            <li class="layui-nav-item"><a href="javascript:;" onclick="window.open('/stopallmonitor')">clear</a></li>
+            <li class="layui-nav-item"><a>1</a></li>
             <li class="layui-nav-item">
-                <a href="javascript:;">其它系统</a>
+                <a href="javascript:;">缓存管理</a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">邮件管理</a></dd>
-                    <dd><a href="">授权管理</a></dd>
+                    <dd><a href="javascript:;" onclick="data.clearJVMData();layer.msg('已清除JVM数据')">清除JVM数据</a></dd>
+                    <dd><a href="javascript:;" onclick="_indexElement.destroyJavaProcess();">清除Java进程</a></dd>
+                    <dd><a href="javascript:;" onclick="cache.cleanCache('config');layer.msg('已清除config配置')" style="color: red;">清除config数据</a></dd>
+                    <dd><a href="javascript:;" onclick="">取消轮询Stack</a></dd>
+                    <dd><a href="javascript:;" onclick="">取消订阅JVM数据</a></dd>
+                    <dd><a href="javascript:;" onclick="">取消订阅日志</a></dd>
                 </dl>
             </li>
         </ul>

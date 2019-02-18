@@ -1,14 +1,13 @@
 package com.sysmin.controller.jvm;
 
 import com.sysmin.core.jvm.JavaProperties;
+import com.sysmin.core.jvm.domain.JpsDO;
 import com.sysmin.core.jvm.domain.JstackDO;
 import com.sysmin.core.jvm.enums.JmapType;
+import com.sysmin.core.jvm.enums.JpsType;
 import com.sysmin.core.jvm.enums.JstackType;
 import com.sysmin.core.jvm.enums.JstatType;
-import com.sysmin.core.jvm.service.impl.JinfoImpl;
-import com.sysmin.core.jvm.service.impl.JmapImpl;
-import com.sysmin.core.jvm.service.impl.JstackImpl;
-import com.sysmin.core.jvm.service.impl.JstatImpl;
+import com.sysmin.core.jvm.service.impl.*;
 import com.sysmin.core.log.Log;
 import com.sysmin.core.log.LogType;
 import com.sysmin.global.LayuiTableVO;
@@ -28,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -40,6 +40,9 @@ import java.util.StringTokenizer;
 public class JvmHandlerController {
 
     @Resource
+    private JpsImpl jpsImpl;
+
+    @Resource
     private JstatImpl jstatImpl;
 
     @Resource
@@ -50,6 +53,21 @@ public class JvmHandlerController {
 
     @Resource
     private JmapImpl jmapImpl;
+
+    /**
+     * jps访问次数
+     */
+    private int visitTime;
+
+    @RequestMapping("/jps")
+    @ResponseBody
+    public Map<String, Object> getJavaProcess() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("data", jpsImpl.jps(JpsType.DEFAULT));
+        map.put("clear", visitTime == 0);
+        visitTime++;
+        return map;
+    }
 
     @RequestMapping("/stopallmonitor")
     @ResponseBody

@@ -1,24 +1,58 @@
 var layer = layui.layer,
     element = layui.element;
 
+var _sockJS = new SockJS("/sock"),
+    _stompClient = Stomp.over(_sockJS),
+    _userId = "test";
+
 $(function () {
     new _init();
 });
+
+/**
+ * 页面元素容器
+ * @type {Object}
+ * @private
+ */
+var _monitorElement = new Object();
+
+/**
+ * 流量元素容器
+ * @type {Array}
+ */
+_monitorElement.flowDataArr = [];
+
+/**
+ * 轮询参数
+ * @type {null}
+ */
+_monitorElement.dataPoll = null;
+
+/**
+ * 监听网络流量
+ */
+_monitorElement.listenFlow = function () {
+    _stompClient.subscribe('/user/' + _userId + '/flowtotal', function (data) {
+        let dataArr = eval('(' + data.body + ')');
+        _view.upFlowView(dataArr.date, dataArr.out);
+        _view.downFlowView(dataArr.date, dataArr.in);
+    });
+};
+/**
+ * 监听网络流量
+ */
+_monitorElement.listenMemory = function () {
+    _stompClient.subscribe('/user/' + _userId + '/memory', function (data) {
+        let dataArr = eval('(' + data.body + ')');
+        _view.memoryView(Math.ceil((dataArr.memBeUsed / dataArr.memTotal) * 100), dataArr.memTotal, dataArr.memBeUsed, dataArr.memBeFree);
+    });
+};
 
 /**
  * 初始化方法
  * @private
  */
 var _init = function () {
-    _view.loadBalanceView(15);
-    _view.cpuView(30);
-    _view.memoryView(30);
-    let update = ['1:1', '1:2', '1:3', '1:4', '1:5', '1:6', '1:7', '1:8', '1:9', '1:10', '1:11', '1:12', '1:13'],
-        upvalue = [128, 79, 121, 56, 32, 18, 170, 150, 180, 160, 120, 128, 200],
-        downdate = ['1:1', '1:2', '1:3', '1:4', '1:5', '1:6', '1:7', '1:8', '1:9', '1:10', '1:11', '1:12', '1:13'],
-        downvalue = [30, 47, 56, 80, 62, 120, 110, 105, 75, 65, 79, 56, 120];
-    _view.upFlowView(update, upvalue);
-    _view.downFlowView(downdate, downvalue);
     $.post("/getsysteminfo", {}, function (data) {
         _data.renderSystemName(data.hostName);
         _data.renderIP(data.ip);
@@ -26,6 +60,33 @@ var _init = function () {
         _data.renderSystemVersion(data.osVersion);
         _data.renderRunningTime(data.upTime);
     });
+    if (cache.getCache("config", "systemtype") === 1) {
+        // 轮询负载
+        _monitorElement.dataPoll = window.setInterval(function () {
+            $.post("/loadbalance", {}, function (data) {
+                _view.loadBalanceView(data[0], data.toString());
+            });
+        }, 2000);
+        $(".layui-card").css("display", "block");
+        _view.loadBalanceView(1, '0,0,0');
+        _view.cpuView(30);
+        _view.memoryView(30, 0, 0, 0);
+        // let update = ['1:1', '1:2', '1:3', '1:4', '1:5', '1:6', '1:7', '1:8', '1:9', '1:10', '1:11', '1:12', '1:13'],
+        //     upvalue = [128, 79, 121, 56, 32, 18, 170, 150, 180, 160, 120, 128, 200],
+        //     downdate = ['1:1', '1:2', '1:3', '1:4', '1:5', '1:6', '1:7', '1:8', '1:9', '1:10', '1:11', '1:12', '1:13'],
+        //     downvalue = [30, 47, 56, 80, 62, 120, 110, 105, 75, 65, 79, 56, 120];
+        // _view.upFlowView(update, upvalue);
+        // _view.downFlowView(downdate, downvalue);
+        $.post("/systemallstart", {}, function (data) {
+            _stompClient.connect({}, function () {
+                _monitorElement.listenMemory();
+                _monitorElement.listenFlow();
+            });
+        });
+
+    } else {
+        $(".layui-card").remove();
+    }
 };
 
 /**
@@ -41,16 +102,18 @@ var _view = [],
 
 /**
  * 负载渲染
- * @param use 系统负载
+ * @param use 系统当前负载
+ * @param data 系统1,5,15负载
  */
-_view.loadBalanceView = function (use) {
+_view.loadBalanceView = function (use, data) {
     _view.loadBalance = echarts.init(document.getElementById('loadBalance'));
     _view.loadBalanceOption = {
         backgroundColor: "#fff",
         tooltip: {
             show: true,
             formatter: function () {
-                return '系统负载: ' + use + "%";
+                return '系统负载: ' + use + '%' + '<br/>' +
+                    data;
             }
         },
         series: [{
@@ -300,9 +363,18 @@ _view.cpuView = function (use) {
  * 内存使用渲染
  * @param use 内存使用率
  */
-_view.memoryView = function (use) {
+_view.memoryView = function (use, total, used, free) {
     _view.memory = echarts.init(document.getElementById('memory'));
     _view.memoryOption = {
+        tooltip: {
+            show: true,
+            formatter: function () {
+                return `最大内存: ${Math.ceil(total / 1024)} MB<br/>
+                      使用中:  ${Math.ceil(used / 1024)} MB<br/>
+                      空闲中:  ${Math.ceil(free / 1024)} MB<br/>
+                    `;
+            }
+        },
         title: {
             text: '内存使用率\n' + use + '%',
             link: "javascript:_data.memoryInfo()",

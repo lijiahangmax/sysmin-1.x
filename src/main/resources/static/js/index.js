@@ -7,6 +7,8 @@ var _sockJS = new SockJS("/sock"),
     _logPage = false,
     // 持久化id自增
     _logId = -1,
+    // 是否连接
+    _connectStatus = false,
     // 用户id
     _userId = "test";
 
@@ -21,7 +23,7 @@ $(function () {
 var _init = function () {
     _indexElement.getSystemType();
     _indexElement.listenerLog();
-    _indexElement.appendJavaProcess();
+    _indexElement.getJavaProcess();
 
 };
 
@@ -62,15 +64,25 @@ $("#log").click(function () {
  * 监听日志
  */
 _indexElement.listenerLog = function () {
+    if (!_sockJS) {
+        _sockJS = new SockJS("/sock");
+        _stompClient = Stomp.over(_sockJS);
+    }
     _stompClient.connect({}, function () {
-        _stompClient.subscribe('/user/' + _userId + '/log', function (log) {
-            if (!_logPage && layui.data("config", "switchLog") != 0) {
-                _logId++;
-                cache.addCache("log", _logId, log);
-                pageElement.logDotShow();
-            }
-        });
+        _connectStatus = true;
     });
+    // connect需要时间建立连接
+    setTimeout(() => {
+        if (_connectStatus) {
+            _stompClient.subscribe('/user/' + _userId + '/log', function (log) {
+                if (!_logPage && layui.data("config", "switchLog") != 0) {
+                    _logId++;
+                    cache.addCache("log", _logId, log);
+                    pageElement.logDotShow();
+                }
+            });
+        }
+    }, 1000);
 };
 
 /**
@@ -81,22 +93,44 @@ _indexElement.listenerLog = function () {
 var _jvmAllProcessArr = [];
 
 /**
- * 拼接jps进程
+ * 获得jps进程
  */
-_indexElement.appendJavaProcess = function () {
-    _jvmAllProcessArr = [];
-    $.post("/jps", {}, function (data) {
+_indexElement.getJavaProcess = function () {
+    if (!_sockJS) {
+        _sockJS = new SockJS("/sock");
+        _stompClient = Stomp.over(_sockJS);
+    }
+    $.post("/jps", {}, function (_data) {
         cache.cleanCache("jps");
-        $.each(eval(data), function (index, _data) {
-            _jvmAllProcessArr.push(_data.pid);
-            cache.addCache("jps", _data.pid, _data.flags);
-            $("#javaprocess").prepend('<dd><a href="javascript:;" class="changepage" ref="/javaprocessinfo?pid=' + _data.pid + '">' + _data.name + '</a></dd>');
-            _indexElement.listenerJavaProcess('/user/' + _userId + '/classloader/' + _data.pid, _data.pid, "classloader");
-            _indexElement.listenerJavaProcess('/user/' + _userId + '/gc/' + _data.pid, _data.pid, "gc");
-            _indexElement.listenerJavaProcess('/user/' + _userId + '/gcutil/' + _data.pid, _data.pid, "gcutil");
-            _indexElement.listenerJavaProcess('/user/' + _userId + '/compiler/' + _data.pid, _data.pid, "compiler");
-            _indexElement.listenerJavaProcess('/user/' + _userId + '/compilation/' + _data.pid, _data.pid, "compilation");
-        });
+        if (_data.clear) {
+            data.clearJVMData();
+        }
+        if (!_connectStatus) {
+            _stompClient.connect({}, function () {
+                _connectStatus = true;
+                _indexElement.appendJavaProcess(_data.data);
+            });
+        } else {
+            _indexElement.appendJavaProcess(_data.data);
+        }
+    });
+};
+
+/**
+ * 拼接jps进程
+ * @param data jps数据
+ */
+_indexElement.appendJavaProcess = function (data) {
+    _jvmAllProcessArr = [];
+    $.each(eval(data), function (index, _data) {
+        _jvmAllProcessArr.push(_data.pid);
+        cache.addCache("jps", _data.pid, _data.flags);
+        $("#javaprocess").prepend('<dd><a href="javascript:;" class="changepage" ref="/javaprocessinfo?pid=' + _data.pid + '">' + _data.name + '</a></dd>');
+        _indexElement.listenerJavaProcess('/user/' + _userId + '/gc/' + _data.pid, _data.pid, "gc");
+        _indexElement.listenerJavaProcess('/user/' + _userId + '/gcutil/' + _data.pid, _data.pid, "gcutil");
+        _indexElement.listenerJavaProcess('/user/' + _userId + '/compiler/' + _data.pid, _data.pid, "compiler");
+        _indexElement.listenerJavaProcess('/user/' + _userId + '/compilation/' + _data.pid, _data.pid, "compilation");
+        _indexElement.listenerJavaProcess('/user/' + _userId + '/classloader/' + _data.pid, _data.pid, "classloader");
     });
 };
 
@@ -159,6 +193,15 @@ _indexElement.getStack = function (timer) {
     data.stackPoll = window.setInterval(function () {
         data.getStackToCache();
     }, timer)
+};
+
+/**
+ * 关闭所有java进程
+ */
+_indexElement.destroyJavaProcess = function () {
+    $.post("/stopallmonitor", {}, function (data) {
+        layer.msg("已关闭 " + data + " 个Java进程")
+    });
 };
 
 /**

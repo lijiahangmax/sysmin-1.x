@@ -7,6 +7,11 @@
     <link href="../../css/layuip.css" rel="stylesheet" type="text/css"/>
     <link href="../../ico/favicon.ico" rel="icon" type="image/x-icon"/>
 </head>
+<style>
+    .layui-card {
+        display: none;
+    }
+</style>
 <body>
 <div>
     <div class="layui-row">
@@ -52,7 +57,7 @@
                 <div class="layui-card">
                     <div class="layui-card-header">
                         上传流量
-                        <button onclick="_data.setUpGranularity()" style="margin-left: 15px;" class="layui-btn layui-btn-normal layui-btn-sm">粒度设置</button>
+                        <!--<button onclick="_data.setUpGranularity()" style="margin-left: 15px;" class="layui-btn layui-btn-normal layui-btn-sm">粒度设置</button>-->
                     </div>
                     <div class="layui-card-body">
                         <div id="upFlow" style="height: 350px;"></div>
@@ -63,7 +68,7 @@
                 <div class="layui-card">
                     <div class="layui-card-header">
                         下载流量
-                        <button onclick="_data.setDownGranularity()" style="margin-left: 15px;" class="layui-btn layui-btn-normal layui-btn-sm">粒度设置</button>
+                        <!--<button onclick="_data.setDownGranularity()" style="margin-left: 15px;" class="layui-btn layui-btn-normal layui-btn-sm">粒度设置</button>-->
                     </div>
                     <div class="layui-card-body">
                         <div id="downFlow" style="height: 350px;"></div>
@@ -79,5 +84,7 @@
 <script src="../../lib/sockjs.min.js" type="text/javascript"></script>
 <script src="../../lib/stomp.min.js" type="text/javascript"></script>
 <script src="../../lib/echarts.min.js" type="text/javascript"></script>
+<script src="../../js/public/cache.js" type="text/javascript"></script>
+<script src="../../js/public/util.js" type="text/javascript"></script>
 <script src="../../js/system/monitor.js" type="text/javascript"></script>
 </html>

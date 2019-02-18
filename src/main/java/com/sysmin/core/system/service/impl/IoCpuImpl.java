@@ -8,6 +8,7 @@ import com.sysmin.global.BaseContinueOut;
 import com.sysmin.util.DateUtil;
 import com.sysmin.util.JsonUtil;
 import com.sysmin.util.StringUtil;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -17,12 +18,15 @@ import java.util.StringTokenizer;
  * @time: 2018/12/27 8:56
  * @version: 1.0.0
  */
+@Service
 public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
 
     /**
      * 行计数器
      */
-    private int lines = 0;
+    private int cpuLines = 0;
+    private int ioLines = 0;
+    private int ioCpuLines = 0;
 
     /**
      * 0:io+cpu  1:io   2:cpu
@@ -42,7 +46,7 @@ public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
     @Override
     public void getIoCpuInfo() {
         type = 0;
-        super.subscribe("iostat -cdxm -t 1");
+        super.subscribe("iostat -cdxm -t 1", true);
     }
 
     @Override
@@ -74,16 +78,16 @@ public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
      * @param data
      */
     private void ioCpuMonitor(String data) {
-        lines++;
-        if (lines == 1 && (data.contains("Linux") || StringUtil.checkEmpty(data))) {
-            lines--;
-        } else if (lines == 3) {
+        ioCpuLines++;
+        if (ioCpuLines == 1 && (data.contains("Linux") || StringUtil.checkEmpty(data))) {
+            ioCpuLines--;
+        } else if (ioCpuLines == 3) {
             iodo.setCpu(setCpuInfo(new StringTokenizer(StringUtil.replaceBlank(data, " "), " ")));
-        } else if (lines > 4) {
+        } else if (ioCpuLines > 4) {
             if (data.contains(DateUtil.getNowDate("yyyy"))) {
                 iodo.setIo(ioList);
                 System.out.println(JsonUtil.objToJson(iodo));
-                lines = 1;
+                ioCpuLines = 1;
                 iodo.getCpu().clear();
                 iodo.getIo().clear();
                 iodo.clear();
@@ -99,14 +103,14 @@ public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
      * @param data
      */
     private void ioMonitor(String data) {
-        lines++;
-        if (lines == 1 && (data.contains("Linux") || StringUtil.checkEmpty(data) || data.contains(DateUtil.getNowDate("yyyy")))) {
-            lines--;
-        } else if (lines > 1) {
+        ioLines++;
+        if (ioLines == 1 && (data.contains("Linux") || StringUtil.checkEmpty(data) || data.contains(DateUtil.getNowDate("yyyy")))) {
+            ioLines--;
+        } else if (ioLines > 1) {
             if (data.contains(DateUtil.getNowDate("yyyy"))) {
                 iodo.setIo(ioList);
                 System.out.println(JsonUtil.objToJson(iodo));
-                lines = 0;
+                ioLines = 0;
                 iodo.getIo().clear();
                 iodo.clear();
             } else {
@@ -121,13 +125,13 @@ public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
      * @param data
      */
     private void cpuMonitor(String data) {
-        lines++;
-        if (lines == 1 && (data.contains("Linux") || StringUtil.checkEmpty(data) || data.contains(DateUtil.getNowDate("yyyy")))) {
-            lines--;
-        } else if (lines > 1) {
+        cpuLines++;
+        if (cpuLines == 1 && (data.contains("Linux") || StringUtil.checkEmpty(data) || data.contains(DateUtil.getNowDate("yyyy")))) {
+            cpuLines--;
+        } else if (cpuLines > 1) {
             if (data.contains(DateUtil.getNowDate("yyyy"))) {
                 System.out.println(JsonUtil.objToJson(iodo.getCpu()));
-                lines = 0;
+                cpuLines = 0;
                 iodo.getCpu().clear();
                 iodo.clear();
             } else {
@@ -178,11 +182,19 @@ public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
 
     @Override
     protected void error(String data) {
+        if (data.contains("command not found")) {
+            System.out.println("未安装 iostat");
+        } else {
+            System.out.println("error: " + data);
+        }
         System.out.println("error: " + data);
     }
 
     @Override
     protected void destroy() {
+        cpuLines = 0;
+        ioLines = 0;
+        ioCpuLines = 0;
         System.out.println("destroy: 销毁");
     }
 
