@@ -172,7 +172,9 @@ public abstract class BaseContinueOut {
      * 取消订阅 (杀死进程)
      */
     protected void unsubscribe() {
-        process.destroy();
+        if (process != null) {
+            process.destroy();
+        }
     }
 
 }

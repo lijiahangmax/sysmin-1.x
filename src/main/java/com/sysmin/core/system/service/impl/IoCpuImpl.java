@@ -8,9 +8,14 @@ import com.sysmin.global.BaseContinueOut;
 import com.sysmin.util.DateUtil;
 import com.sysmin.util.JsonUtil;
 import com.sysmin.util.StringUtil;
+import org.springframework.context.annotation.Scope;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
@@ -19,7 +24,11 @@ import java.util.StringTokenizer;
  * @version: 1.0.0
  */
 @Service
+@Scope("prototype")
 public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
+
+    @Resource
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     /**
      * 行计数器
@@ -42,6 +51,11 @@ public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
      * 全局io对象
      */
     private ArrayList<IoInfo> ioList = new ArrayList<>();
+
+    /**
+     * 结果数据集
+     */
+    private Map<String, Map<String, Object>> res = new HashMap<>(13);
 
     @Override
     public void getIoCpuInfo() {
@@ -86,7 +100,8 @@ public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
         } else if (ioCpuLines > 4) {
             if (data.contains(DateUtil.getNowDate("yyyy"))) {
                 iodo.setIo(ioList);
-                System.out.println(JsonUtil.objToJson(iodo));
+                simpMessagingTemplate.convertAndSendToUser("test", "/iocpu", iodo);
+                // System.out.println(JsonUtil.objToJson(iodo));
                 ioCpuLines = 1;
                 iodo.getCpu().clear();
                 iodo.getIo().clear();

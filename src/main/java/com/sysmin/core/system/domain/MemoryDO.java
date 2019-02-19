@@ -39,7 +39,7 @@ public class MemoryDO {
     private Long memCached;
 
     /**
-     * 在使用的内存总量 已使用内存（used）减去buffer和cached之后的内存
+     * 正在使用的内存总量 已使用内存（used）减去buffer和cached之后的内存
      */
     private Long memBeUsed;
 

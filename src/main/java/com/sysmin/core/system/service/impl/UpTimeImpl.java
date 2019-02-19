@@ -16,7 +16,16 @@ public class UpTimeImpl implements UpTimeApi {
     public UpTimeDO getUpTime() {
         String line = BashUtil.exec("uptime", true);
         String[] data = line.split(" ");
-        if (data.length == 14) {
+        if (data.length == 13) {
+            return new UpTimeDO().setSystemTime(data[1])
+                    .setUpTime(data[3])
+                    .setUsers(Integer.valueOf(data[5]))
+                    .setAverage(new Double[]{
+                            Double.valueOf(data[10].substring(0, data[10].length() - 1)),
+                            Double.valueOf(data[11].substring(0, data[11].length() - 1)),
+                            Double.valueOf(data[12])
+                    });
+        } else if (data.length == 14) {
             return new UpTimeDO().setSystemTime(data[1])
                     .setUpTime(data[4])
                     .setUsers(Integer.valueOf(data[6]))

@@ -4,7 +4,7 @@ import com.sysmin.core.system.domain.FlowDO;
 import com.sysmin.core.system.service.api.FlowApi;
 import com.sysmin.global.BaseContinueOut;
 import com.sysmin.util.BashUtil;
-import com.sysmin.util.JsonUtil;
+import com.sysmin.util.CollectionUtil;
 import com.sysmin.util.StringUtil;
 import org.springframework.context.annotation.Scope;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -85,32 +85,16 @@ public class FlowImpl extends BaseContinueOut implements FlowApi {
                 dateList.add(flow.getDate());
                 inList.add(flow.getIn());
                 outList.add(flow.getOut());
-                resMap.put("date", cutList(dateList, 30));
-                resMap.put("in", cutList(inList, 30));
-                resMap.put("out", cutList(outList, 30));
+                resMap.put("date", CollectionUtil.cutList(dateList, 30));
+                resMap.put("in", CollectionUtil.cutList(inList, 30));
+                resMap.put("out", CollectionUtil.cutList(outList, 30));
                 res.put(typeList.get(i), resMap);
             }
             simpMessagingTemplate.convertAndSendToUser("test", "/flowtotal", res.get("Total"));
-            simpMessagingTemplate.convertAndSendToUser("test", "/flowall", res);
+            // simpMessagingTemplate.convertAndSendToUser("test", "/flowall", res);
         }
     }
 
-    /**
-     * 保留集合的后几位
-     *
-     * @param list 集合
-     * @param len  保留几位
-     * @return 新集合
-     */
-    public List cutList(List list, int len) {
-        if (len < list.size()) {
-            int size = list.size();
-            for (int i = 0; i < size - len; i++) {
-                list.remove(0);
-            }
-        }
-        return list;
-    }
 
     @Override
     protected void error(String data) {

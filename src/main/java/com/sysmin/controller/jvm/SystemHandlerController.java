@@ -1,14 +1,13 @@
 package com.sysmin.controller.jvm;
 
-import com.sysmin.core.system.service.impl.FlowImpl;
-import com.sysmin.core.system.service.impl.IoCpuImpl;
-import com.sysmin.core.system.service.impl.MemoryImpl;
-import com.sysmin.core.system.service.impl.UpTimeImpl;
+import com.sysmin.core.system.domain.DiskDO;
+import com.sysmin.core.system.service.impl.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 
 /**
  * @author:Li
@@ -30,6 +29,9 @@ public class SystemHandlerController {
     @Resource
     private UpTimeImpl upTimeImpl;
 
+    @Resource
+    private DiskImpl diskImpl;
+
     @RequestMapping("/loadbalance")
     @ResponseBody
     public Double[] upTimeLoadBalance() {
@@ -49,16 +51,32 @@ public class SystemHandlerController {
                 flowImpl.subscribe();
             }).start();
         }
+        if (IoCpuImpl.systemProcess.get("iostat") == null) {
+            new Thread(() -> {
+                ioCpuImpl.getIoCpuInfo();
+            }).start();
+            return 1;
+        }
         return 1;
+    }
+
+    @RequestMapping("/diskinfo")
+    @ResponseBody
+    public ArrayList<DiskDO> diskInfo() {
+        return diskImpl.getDiskInfo();
     }
 
     @RequestMapping("/iostart")
     @ResponseBody
     public int ioStart() {
-        new Thread(() -> {
-            ioCpuImpl.getIoInfo();
-        }).start();
-        return 1;
+        if (IoCpuImpl.systemProcess.get("iostat") == null) {
+            new Thread(() -> {
+                ioCpuImpl.getIoCpuInfo();
+            }).start();
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     @RequestMapping("/iostop")
