@@ -23,4 +23,12 @@ public interface IoCpuApi {
      */
     void getIoCpuInfo();
 
+    /**
+     * 安装iostat
+     * yum -y install sysstat
+     *
+     * @return 0安装失败 1安装成功
+     */
+    int install();
+
 }

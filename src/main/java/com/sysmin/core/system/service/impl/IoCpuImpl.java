@@ -1,14 +1,16 @@
 package com.sysmin.core.system.service.impl;
 
+import com.sysmin.core.log.Log;
+import com.sysmin.core.log.LogType;
 import com.sysmin.core.system.domain.io.CpuInfo;
 import com.sysmin.core.system.domain.io.IoDO;
 import com.sysmin.core.system.domain.io.IoInfo;
 import com.sysmin.core.system.service.api.IoCpuApi;
 import com.sysmin.global.BaseContinueOut;
+import com.sysmin.util.BashUtil;
 import com.sysmin.util.DateUtil;
 import com.sysmin.util.JsonUtil;
 import com.sysmin.util.StringUtil;
-import org.springframework.context.annotation.Scope;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,6 @@ import java.util.StringTokenizer;
  * @version: 1.0.0
  */
 @Service
-@Scope("prototype")
 public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
 
     @Resource
@@ -36,6 +37,11 @@ public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
     private int cpuLines = 0;
     private int ioLines = 0;
     private int ioCpuLines = 0;
+
+    /**
+     * 是否安装 iostat 1安装 0未安装
+     */
+    public static int install = 1;
 
     /**
      * 0:io+cpu  1:io   2:cpu
@@ -61,6 +67,13 @@ public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
     public void getIoCpuInfo() {
         type = 0;
         super.subscribe("iostat -cdxm -t 1", true);
+    }
+
+    @Override
+    public int install() {
+        BashUtil.exec("yum -y install sysstat", true);
+        install = 1;
+        return BashUtil.exec("iostat").length() > 0 ? 1 : 0;
     }
 
     @Override
@@ -197,12 +210,13 @@ public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
 
     @Override
     protected void error(String data) {
-        if (data.contains("command not found")) {
+        Log.getLog("test", data, "iocpu error", LogType.ERROR);
+        if (data.contains("Cannot run program")) {
+            install = 0;
             System.out.println("未安装 iostat");
         } else {
             System.out.println("error: " + data);
         }
-        System.out.println("error: " + data);
     }
 
     @Override
@@ -210,6 +224,9 @@ public class IoCpuImpl extends BaseContinueOut implements IoCpuApi {
         cpuLines = 0;
         ioLines = 0;
         ioCpuLines = 0;
+        if (IoCpuImpl.systemProcess.get("iostat") != null) {
+            systemProcess.get("iostat").destroy();
+        }
         System.out.println("destroy: 销毁");
     }
 

@@ -1,5 +1,7 @@
 package com.sysmin.core.system.service.impl;
 
+import com.sysmin.core.log.Log;
+import com.sysmin.core.log.LogType;
 import com.sysmin.core.system.domain.MemoryDO;
 import com.sysmin.core.system.service.api.MemoryApi;
 import com.sysmin.global.BaseContinueOut;
@@ -70,6 +72,7 @@ public class MemoryImpl extends BaseContinueOut implements MemoryApi {
 
     @Override
     protected void error(String data) {
+        Log.getLog("test", data, "memory error", LogType.ERROR);
         System.out.println("error :" + data);
     }
 

@@ -1,12 +1,13 @@
 package com.sysmin.core.system.service.impl;
 
+import com.sysmin.core.log.Log;
+import com.sysmin.core.log.LogType;
 import com.sysmin.core.system.domain.FlowDO;
 import com.sysmin.core.system.service.api.FlowApi;
 import com.sysmin.global.BaseContinueOut;
 import com.sysmin.util.BashUtil;
 import com.sysmin.util.CollectionUtil;
 import com.sysmin.util.StringUtil;
-import org.springframework.context.annotation.Scope;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,6 @@ import java.util.*;
  * @version: 1.0.0
  */
 @Service
-@Scope("prototype")
 public class FlowImpl extends BaseContinueOut implements FlowApi {
 
     @Resource
@@ -29,6 +29,11 @@ public class FlowImpl extends BaseContinueOut implements FlowApi {
      * 行计数器
      */
     private int lines = 0;
+
+    /**
+     * 是否安装 ifstat 1安装 0未安装
+     */
+    public static int install = 1;
 
     /**
      * 数据集
@@ -90,7 +95,11 @@ public class FlowImpl extends BaseContinueOut implements FlowApi {
                 resMap.put("out", CollectionUtil.cutList(outList, 30));
                 res.put(typeList.get(i), resMap);
             }
-            simpMessagingTemplate.convertAndSendToUser("test", "/flowtotal", res.get("Total"));
+            if (!res.containsKey("Total")) {
+                simpMessagingTemplate.convertAndSendToUser("test", "/flowtotal", res.get(res.keySet().toArray()[0]));
+            } else {
+                simpMessagingTemplate.convertAndSendToUser("test", "/flowtotal", res.get("Total"));
+            }
             // simpMessagingTemplate.convertAndSendToUser("test", "/flowall", res);
         }
     }
@@ -98,10 +107,12 @@ public class FlowImpl extends BaseContinueOut implements FlowApi {
 
     @Override
     protected void error(String data) {
+        Log.getLog("test", data, "flow error", LogType.ERROR);
         if (data.contains("command not found")) {
+            install = 0;
             System.out.println("未安装 ifstat");
         } else {
-            System.out.println("error: " + data);
+            System.out.println("flow error: " + data);
         }
     }
 

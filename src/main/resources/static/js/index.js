@@ -82,7 +82,7 @@ _indexElement.listenerLog = function () {
                 }
             });
         }
-    }, 1000);
+    }, 700);
 };
 
 /**
@@ -243,7 +243,7 @@ data.addJVMDataToCache = function (_data, _pid, _type) {
         }
         cache.addCache(_type, _type + _pid, _caches);
     }
-    console.log(cache.getCache(_type));
+    // console.log(cache.getCache(_type));
 };
 
 /**

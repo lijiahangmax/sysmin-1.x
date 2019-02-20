@@ -32,6 +32,12 @@ public class SystemHandlerController {
     @Resource
     private DiskImpl diskImpl;
 
+    @RequestMapping("/installiostat")
+    @ResponseBody
+    public int installIostat() {
+        return ioCpuImpl.install();
+    }
+
     @RequestMapping("/loadbalance")
     @ResponseBody
     public Double[] upTimeLoadBalance() {
@@ -40,7 +46,7 @@ public class SystemHandlerController {
 
     @RequestMapping("/systemallstart")
     @ResponseBody
-    public int systemAllStart() {
+    public int[] systemAllStart() {
         if (MemoryImpl.systemProcess.get("free") == null) {
             new Thread(() -> {
                 memoryImpl.getMemory();
@@ -55,9 +61,14 @@ public class SystemHandlerController {
             new Thread(() -> {
                 ioCpuImpl.getIoCpuInfo();
             }).start();
-            return 1;
         }
-        return 1;
+        try {
+            // 这里休眠是为了让系统检查iostat和ifstat是否安装
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return new int[]{IoCpuImpl.install, FlowImpl.install};
     }
 
     @RequestMapping("/diskinfo")

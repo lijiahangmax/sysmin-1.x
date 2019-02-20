@@ -40,7 +40,7 @@ _monitorElement.listenFlow = function () {
 };
 
 /**
- * 监听网络流量
+ * 监听内存信息
  */
 _monitorElement.listenMemory = function () {
     _stompClient.subscribe('/user/' + _userId + '/memory', function (data) {
@@ -57,7 +57,6 @@ _monitorElement.listenIoCpu = function () {
     _stompClient.subscribe('/user/' + _userId + '/iocpu', function (data) {
         let dataArr = eval('(' + data.body + ')');
         _view.cpuView(dataArr.cpu.user + dataArr.cpu.system);
-        // {"cpu":{"idle":97.98,"iowait":0.0,"nice":0.0,"steal":0.0,"system":1.01,"user":1.01},"io":[{"avgqu":0.0,"avgrq":0.0,"await":0.0,"device":"scd0","r":0.0,"rAwait":0.0,"rMB":0.0,"rrqm":0.0,"svctm":0.0,"util":0.0,"w":0.0,"wAwait":0.0,"wMB":0.0,"wrqm":0.0},{"avgqu":0.0,"avgrq":0.0,"await":0.0,"device":"sda","r":0.0,"rAwait":0.0,"rMB":0.0,"rrqm":0.0,"svctm":0.0,"util":0.0,"w":0.0,"wAwait":0.0,"wMB":0.0,"wrqm":0.0},{"avgqu":0.0,"avgrq":0.0,"await":0.0,"device":"dm-0","r":0.0,"rAwait":0.0,"rMB":0.0,"rrqm":0.0,"svctm":0.0,"util":0.0,"w":0.0,"wAwait":0.0,"wMB":0.0,"wrqm":0.0},{"avgqu":0.0,"avgrq":0.0,"await":0.0,"device":"dm-1","r":0.0,"rAwait":0.0,"rMB":0.0,"rrqm":0.0,"svctm":0.0,"util":0.0,"w":0.0,"wAwait":0.0,"wMB":0.0,"wrqm":0.0}]}
     });
 };
 
@@ -102,20 +101,34 @@ var _init = function () {
         _view.loadBalanceView(1, '0,0,0');
         _view.cpuView(5);
         _view.memoryView(30, 0, 0, 0);
-        // let update = ['1:1', '1:2', '1:3', '1:4', '1:5', '1:6', '1:7', '1:8', '1:9', '1:10', '1:11', '1:12', '1:13'],
-        //     upvalue = [128, 79, 121, 56, 32, 18, 170, 150, 180, 160, 120, 128, 200],
-        //     downdate = ['1:1', '1:2', '1:3', '1:4', '1:5', '1:6', '1:7', '1:8', '1:9', '1:10', '1:11', '1:12', '1:13'],
-        //     downvalue = [30, 47, 56, 80, 62, 120, 110, 105, 75, 65, 79, 56, 120];
-        // _view.upFlowView(update, upvalue);
-        // _view.downFlowView(downdate, downvalue);
 
-        $.post("/systemallstart", {}, function (data) {
-            _stompClient.connect({}, function () {
+        _stompClient.connect({}, function () {
+        });
+
+        setTimeout(() => {
+            $.post("/systemallstart", {}, function (installed) {
                 _monitorElement.listenMemory();
                 _monitorElement.listenFlow();
                 _monitorElement.listenIoCpu();
+                if (installed[0] === 0 && installed[1] === 0) {
+                    layer.msg("iostat未安装 IO CPU监控失效<br/>" +
+                        "ifstat未安装 流量监控失效", function () {
+                    });
+                    _data.flowTemplate();
+                    _data.renderInstallIOBtn();
+                    _data.renderInstallFlowBtn();
+                } else if (installed[0] === 0) {
+                    layer.msg("iostat未安装 IO CPU监控失效", function () {
+                    });
+                    _data.renderInstallIOBtn();
+                } else if (installed[1] === 0) {
+                    layer.msg("ifstat未安装 流量监控失效", function () {
+                    });
+                    _data.flowTemplate();
+                    _data.renderInstallFlowBtn();
+                }
             });
-        });
+        }, 500);
     } else {
         $(".layui-card").remove();
     }
@@ -637,7 +650,6 @@ _view.downFlowView = function (date, value) {
  * 弹出内存信息
  */
 _data.memoryInfo = function () {
-    console.log(_data.memoryArr);
     let memArr = eval('(' + _data.memoryArr + ')');
     layer.open({
         skin: 'layui-layer-hei',
@@ -677,6 +689,86 @@ _data.diskInfo = function (dataDom) {
             已使用: ${diskData.use}<br/>
             未使用: ${100 - use}%<br/>
             挂载点: ${diskData.mounted}
+        `
+    });
+};
+
+/**
+ * 流量监控模板
+ */
+_data.flowTemplate = function () {
+    let update = ['1:1', '1:2', '1:3', '1:4', '1:5', '1:6', '1:7', '1:8', '1:9', '1:10', '1:11', '1:12', '1:13'],
+        upvalue = [128, 79, 121, 56, 32, 18, 170, 150, 180, 160, 120, 128, 200],
+        downdate = ['1:1', '1:2', '1:3', '1:4', '1:5', '1:6', '1:7', '1:8', '1:9', '1:10', '1:11', '1:12', '1:13'],
+        downvalue = [30, 47, 56, 80, 62, 120, 110, 105, 75, 65, 79, 56, 120];
+    _view.upFlowView(update, upvalue);
+    _view.downFlowView(downdate, downvalue);
+};
+
+/**
+ * 渲染安装iostat按钮
+ */
+_data.renderInstallIOBtn = function () {
+    $("#deviceHeader").append('<button id="installio" onclick="_data.renderInstallIOLayer()" style="margin-left: 15px;" class="layui-btn layui-btn-danger layui-btn-sm">安装iostat</button>');
+};
+
+/**
+ * 渲染安装ifstat按钮
+ */
+_data.renderInstallFlowBtn = function () {
+    $("#flowHeader").append('<button id="installflow"  onclick="_data.renderInstallFlowLayer()" style="margin-left: 15px;" class="layui-btn layui-btn-danger layui-btn-sm">安装ifstat</button>');
+};
+
+/**
+ * 渲染安装iostat层
+ */
+_data.renderInstallIOLayer = function () {
+    _data.ioLayerIndex = layer.open({
+        skin: 'layui-layer-hei',
+        shade: false,
+        title: '安装iostat',
+        btn: ['立即安装'],
+        btn1: function (index, layero) {
+            _data.renderInstallIO();
+        },
+        content: '执行: yum -y install sysstat<br/>'
+    });
+};
+
+/**
+ * 安装iostat
+ */
+_data.renderInstallIO = function () {
+    layer.close(_data.ioLayerIndex);
+    layer.msg("正在安装...");
+    $.post("/installiostat", {}, function (data) {
+        if (data === 1) {
+            layer.msg("安装成功!");
+            $("#installio").remove();
+            _monitorElement.listenIoCpu();
+        } else if (data === 0) {
+            layer.msg("安装失败!请手动安装");
+        }
+    });
+};
+
+/**
+ * 渲染安装ifstat层
+ */
+_data.renderInstallFlowLayer = function () {
+    layer.open({
+        skin: 'layui-layer-hei',
+        shade: false,
+        area: '370px',
+        title: '安装ifstat',
+        content: `
+        wget http://gael.roualland.free.fr/ifstat/ifstat-1.1.tar.gz <br/>
+        tar -zxvf ifstat-1.1.tar.gz<br/>
+        cd ifstat-1.1<br/>
+        chmod 777 *<br/>
+        ./configure #默认会安装到/usr/local/bin/目录中<br/>
+        make; make install<br/>
+        执行which ifstat输出/usr/local/bin/ifstat证明成功<br/>
         `
     });
 };

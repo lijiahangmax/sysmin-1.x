@@ -130,6 +130,7 @@ public abstract class BaseContinueOut {
                 // 流已关闭
             } else if (e.getMessage().contains("Cannot run program")) {
                 // 未安装应用
+                error(e.getMessage());
             } else if (e.getMessage().contains("管道的另一端上无任何进程")) {
                 // 已关闭
             } else {
