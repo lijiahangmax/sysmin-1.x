@@ -160,6 +160,13 @@ $(document.body).on('click', '.logfile', function () {
         let _data = eval(data),
             _html = "";
         $.each(_data, function (index, $data) {
+            if ($data.logType === "INFO") {
+                $data.logType = '<span style="color:green">' + $data.logType + '</span>';
+            } else if ($data.logType === "WARN") {
+                $data.logType = '<span style="color:yellow">' + $data.logType + '</span>';
+            } else if ($data.logType === "ERROR") {
+                $data.logType = '<span style="color:red">' + $data.logType + '</span>';
+            }
             _html += ("<div class='layui-row logs' id='log" + $data.id + "' style=''>" +
                 "<div class='layui-col-md1'>" + $data.logType + "</div>" +
                 "<div class='layui-col-md1'>" + $data.user + "</div>" +
@@ -214,6 +221,13 @@ _logElenent.xfile = function () {
  */
 _logElenent.printLog = function (log) {
     var _log = eval("(" + log + ")");
+    if (_log.logType === "INFO") {
+        _log.logType = '<span style="color:green">' + _log.logType + '</span>';
+    } else if (_log.logType === "WARN") {
+        _log.logType = '<span style="color:yellow">' + _log.logType + '</span>';
+    } else if (_log.logType === "ERROR") {
+        _log.logType = '<span style="color:red">' + _log.logType + '</span>';
+    }
     $("#logcontainer").prepend("<div class='layui-row logs' id='log" + _log.id + "' style=''>" +
         "<div class='layui-col-md1'>" + _log.logType + "</div>" +
         "<div class='layui-col-md1'>" + _log.user + "</div>" +
