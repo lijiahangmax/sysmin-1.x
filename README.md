@@ -5,9 +5,9 @@
   https://github.com/lijiahangmax/sysmin-1.x
 
   切片图:
-    ![Image text](.\pic\jvm_status1.png)
-    ![Image text](.\pic\jvm_status2.png)
-    ![Image text](.\pic\system_monitor.png)
-    ![Image text](.\pic\log_page.png)
-    ![Image text](.\pic\stack_snap.png)
-    ![Image text](.\pic\thread_snap.png)
+    ![Image text](/pic/jvm_status2.png)
+    ![Image text](/pic/jvm_status2.png)
+    ![Image text](/pic/pic\system_monitor.png)
+    ![Image text](/pic/log_page.png)
+    ![Image text](/pic/stack_snap.png)
+    ![Image text](/pic/thread_snap.png)
