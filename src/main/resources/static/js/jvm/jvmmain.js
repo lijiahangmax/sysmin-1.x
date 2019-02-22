@@ -12,7 +12,9 @@ $(function () {
 var _init = function () {
     _data.getJavaHome();
     _data.getJavaVersion();
-    _data.getJavaVendor()
+    _data.getJavaVendor();
+    layer.msg('一定要用OracleJDK <br/>' +
+        '使用OpenJDK工具统计工具无法加载');
 };
 
 /**

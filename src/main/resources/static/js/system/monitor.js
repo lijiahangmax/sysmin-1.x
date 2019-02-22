@@ -85,7 +85,7 @@ var _init = function () {
             _data.diskArr = dataArr;
             let len = dataArr.length <= 3 ? dataArr.length : 3;
             for (let i = 0; i < len; i++) {
-                $("#summarize").append('<div id="disk' + i + '" class="layui-col-md2" style="height: 300px;"></div>');
+                $("#summarize").append('<div id="disk' + i + '" class="layui-col-md2 layui-col-sm2" style="height: 300px;"></div>');
                 setTimeout(() => {
                     let use = dataArr[i].use.substring(0, dataArr[i].use.length - 1);
                     if (dataArr[i].mounted.length > 7) {
