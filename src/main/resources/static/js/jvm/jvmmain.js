@@ -14,7 +14,8 @@ var _init = function () {
     _data.getJavaVersion();
     _data.getJavaVendor();
     layer.msg('一定要用OracleJDK <br/>' +
-        '使用OpenJDK工具统计工具无法加载');
+        '使用OpenJDK工具统计工具无法加载<br/>' +
+        '如果数据未加载出来请等待并且刷新页面');
 };
 
 /**

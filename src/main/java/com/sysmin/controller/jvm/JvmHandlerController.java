@@ -89,6 +89,7 @@ public class JvmHandlerController {
             Log.getLog("test", "startallmonitor", "all");
             while (token.hasMoreTokens()) {
                 int pid = Integer.valueOf(token.nextToken());
+                // 不使用线程池是因为thread中的process就是长连接 而且websocket通信不能断开
                 new Thread(() -> {
                     jstatImpl.jstat(pid, JstatType.CLASS);
                 }).start();
